@@ -3,81 +3,6 @@ __author__ = 'mpevans'
 from playcorder import *
 
 
-class MidiPlaycorderInstrument:
-
-    def __init__(self, fs, sfid, inst_num, start_channel, num_channels, host_playcorder=None, name=None, bank=0):
-        assert isinstance(fs, localfluidsynth.Synth)
-        assert isinstance(host_playcorder, Playcorder)
-        self.host_playcorder = host_playcorder
-        self.fs = fs
-        for i in range(start_channel, start_channel + num_channels):
-            fs.program_select(i, sfid, bank, inst_num)
-        self.chan = 0
-        self.start_channel = start_channel
-        self.num_channels = num_channels
-        self.name = name
-        # each entry goes (pitch, volume, start_time)
-        self.notes_started = []
-
-    def play_note_thread(self, pitch, volume, length, start_delay):
-        chan = self.start_channel + self.chan
-        self.chan = (self.chan + 1) % self.num_channels
-        int_pitch = int(round(pitch))
-        pitch_bend_val = int((pitch - int_pitch)*2048)
-        self.fs.pitch_bend(chan, pitch_bend_val)
-        time.sleep(start_delay)
-        self.fs.noteon(chan, int_pitch, int(volume*127))
-        time.sleep(length)
-        self.fs.noteon(chan, int_pitch, 0)
-
-    def play_note(self, pitch, volume, length, start_delay=0, variant="norm"):
-        thread.start_new_thread(self.play_note_thread, (pitch, volume, length, start_delay))
-        if self.host_playcorder and self.host_playcorder.recording_start_time is not None:
-            self.host_playcorder.record_note(self, pitch, volume, length, start_delay, variant=variant)
-
-    def start_note(self, pitch, volume):
-        chan = self.start_channel + self.chan
-        self.chan = (self.chan + 1) % self.num_channels
-        int_pitch = int(round(pitch))
-        pitch_bend_val = int((pitch - int_pitch)*2048)
-        self.fs.pitch_bend(chan, pitch_bend_val)
-        self.fs.noteon(chan, int_pitch, int(volume*127))
-        self.notes_started.append((chan, pitch, volume, self.host_playcorder.get_time_passed()))
-        # returns the channel as a reference, in case we want to start and stop a bunch of these
-        return chan
-
-    def set_pitch_bend(self, cents, chan=None):
-        if chan is None:
-            chan = self.start_channel + self.chan -1
-        pitch_bend_val = int(cents/100.0*2048)
-        self.fs.pitch_bend(chan, pitch_bend_val)
-
-    def end_note(self, chan=None):
-        if chan is not None:
-            note_to_end = None
-            for started_note in self.notes_started:
-                if started_note[0] == chan:
-                    note_to_end = started_note
-                    break
-            self.notes_started.remove(note_to_end)
-        else:
-            note_to_end = self.notes_started.pop(0)
-        if note_to_end is None:
-            return
-        chan, pitch, volume, start_time = note_to_end
-        self.fs.noteon(chan, int(pitch), 0)
-        if start_time is not None and self.host_playcorder.get_time_passed() is not None:
-            self.host_playcorder.record_note(self, pitch, volume, self.host_playcorder.get_time_passed()-start_time,
-                                             start_time=start_time)
-
-    def end_all_notes(self):
-        while len(self.notes_started) > 0:
-            self.end_note()
-
-    def num_notes_playing(self):
-        return len(self.notes_started)
-
-
 class ChuckPlaycorderInstrument:
 
     def __init__(self, file_path, osc_message_address, args=[], host_playcorder=None, name=None):
@@ -92,19 +17,6 @@ class ChuckPlaycorderInstrument:
                                                                       float(length), float(start_delay)])
         if self.host_playcorder:
             self.host_playcorder.record_note(self, pitch, volume, length, start_delay, variant=variant)
-
-
-class SilentPlaycorderInstrument:
-
-    def __init__(self, host_playcorder=None, name=None):
-        assert isinstance(host_playcorder, Playcorder) or host_playcorder is None
-        self.host_playcorder = host_playcorder
-        self.name = name
-
-    def play_note(self, pitch, volume, length, start_delay=0, variant="norm", text_annotation=None):
-        if self.host_playcorder:
-            self.host_playcorder.record_note(self, pitch, volume, length, start_delay,
-                                             variant=variant, text_annotation=text_annotation)
 
 
 class ChuckMultiSamplePlayer:
