@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/playcorder/playcorder.py" line="337" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="1851a264-a5ae-475c-8539-056ca0223202" name="Default" comment="" />
+    <list default="true" id="1851a264-a5ae-475c-8539-056ca0223202" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/barlicity.py" afterPath="$PROJECT_DIR$/barlicity.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/mpevans.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/mpevans.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/playcorder.py" afterPath="$PROJECT_DIR$/playcorder/playcorder.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/playcorder_instruments.py" afterPath="$PROJECT_DIR$/playcorder/playcorder_instruments.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utilities.py" afterPath="$PROJECT_DIR$/utilities.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="marcpy.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -26,13 +36,55 @@
       <file leaf-file-name="playcorder.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="45" selection-start="468" selection-end="468" vertical-scroll-proportion="0.30949107" vertical-offset="0" max-vertical-offset="3510">
+            <state line="393" column="36" selection-start="20599" selection-end="20599" vertical-scroll-proportion="0.67099565" vertical-offset="5430" max-vertical-offset="9240">
               <folding>
                 <element signature="e#24#46#0" expanded="true" />
-                <element signature="e#9395#10326#0" expanded="false" />
-                <element signature="e#10366#13592#0" expanded="false" />
-                <element signature="e#13634#14160#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utilities.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/utilities.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="225" column="0" selection-start="6061" selection-end="6061" vertical-scroll-proportion="0.0" vertical-offset="3375" max-vertical-offset="4935">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="abjad_extensions.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="495">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="m21ToXml.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../music21/musicxml/m21ToXml.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="353" column="8" selection-start="10379" selection-end="10379" vertical-scroll-proportion="0.0" vertical-offset="5295" max-vertical-offset="66705">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MidiFile.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="localfluidsynth.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -40,7 +92,16 @@
       <file leaf-file-name="playcorder_instruments.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="0" selection-start="879" selection-end="879" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1545">
+            <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="barlicity.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/barlicity.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="96" column="0" selection-start="2168" selection-end="2168" vertical-scroll-proportion="0.0" vertical-offset="1440" max-vertical-offset="7860">
               <folding />
             </state>
           </provider>
@@ -66,13 +127,15 @@
       <list>
         <option value="$PROJECT_DIR$/playcorder/playcorder3.py" />
         <option value="$PROJECT_DIR$/playcorder/playcorder_instruments.py" />
+        <option value="$PROJECT_DIR$/barlicity.py" />
+        <option value="$PROJECT_DIR$/utilities.py" />
         <option value="$PROJECT_DIR$/playcorder/playcorder.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="96" />
-    <option name="y" value="23" />
+    <option name="x" value="21" />
+    <option name="y" value="24" />
     <option name="width" value="1344" />
     <option name="height" value="873" />
   </component>
@@ -102,6 +165,16 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope">
+        <subPane subId="Changed Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -136,16 +209,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope">
-        <subPane subId="Changed Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -155,6 +218,23 @@
     <property name="options.searchVisible" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="recentsLimit" value="5" />
+    <property name="FullScreen" value="false" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="110" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="127" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="131" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="925" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="122" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="123" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="127" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="921" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -179,6 +259,42 @@
       <RunnerSettings RunnerId="PyDebugRunner" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="utilities" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utilities.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="barlicity" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/barlicity.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
@@ -303,12 +419,16 @@
       <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
-    <list size="1">
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Python.playcorder" />
+      <item index="1" class="java.lang.String" itemvalue="Python.utilities" />
+      <item index="2" class="java.lang.String" itemvalue="Python.barlicity" />
     </list>
     <recent_temporary>
-      <list size="1">
+      <list size="3">
         <item index="0" class="java.lang.String" itemvalue="Python.playcorder" />
+        <item index="1" class="java.lang.String" itemvalue="Python.utilities" />
+        <item index="2" class="java.lang.String" itemvalue="Python.barlicity" />
       </list>
     </recent_temporary>
   </component>
@@ -331,27 +451,27 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="96" y="23" width="1344" height="873" extended-state="0" />
+    <frame x="21" y="24" width="1344" height="873" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286908" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286908" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32980132" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18518518" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18442933" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32980132" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3112583" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847682" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31043592" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847682" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -375,28 +495,371 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../music21/stream/__init__.py">
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11629" column="8" selection-start="460305" selection-end="460305" vertical-scroll-proportion="2.3010752" vertical-offset="172750" max-vertical-offset="188205">
+        <state line="42" column="0" selection-start="1800" selection-end="1800" vertical-scroll-proportion="0.0" vertical-offset="583" max-vertical-offset="7635">
+          <folding>
+            <element signature="e#24#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utilities.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="187" column="0" selection-start="5312" selection-end="5312" vertical-scroll-proportion="0.0" vertical-offset="2805" max-vertical-offset="4740">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="495">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../music21/musicxml/m21ToXml.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="353" column="8" selection-start="10379" selection-end="10379" vertical-scroll-proportion="0.0" vertical-offset="5295" max-vertical-offset="66705">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="0" selection-start="879" selection-end="879" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1545">
+        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/barlicity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="0" selection-start="2168" selection-end="2168" vertical-scroll-proportion="0.0" vertical-offset="1440" max-vertical-offset="7860">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="45" selection-start="468" selection-end="468" vertical-scroll-proportion="0.30949107" vertical-offset="0" max-vertical-offset="3510">
+        <state line="231" column="51" selection-start="10578" selection-end="10578" vertical-scroll-proportion="0.0" vertical-offset="3465" max-vertical-offset="7200">
           <folding>
             <element signature="e#24#46#0" expanded="true" />
-            <element signature="e#9395#10326#0" expanded="false" />
-            <element signature="e#10366#13592#0" expanded="false" />
-            <element signature="e#13634#14160#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utilities.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="218" column="0" selection-start="6074" selection-end="6074" vertical-scroll-proportion="0.0" vertical-offset="3270" max-vertical-offset="4575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="495">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../music21/musicxml/m21ToXml.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="353" column="8" selection-start="10379" selection-end="10379" vertical-scroll-proportion="0.0" vertical-offset="5295" max-vertical-offset="66705">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/barlicity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="439" column="0" selection-start="19260" selection-end="19260" vertical-scroll-proportion="0.0" vertical-offset="6585" max-vertical-offset="8160">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="231" column="51" selection-start="10578" selection-end="10578" vertical-scroll-proportion="0.0" vertical-offset="3240" max-vertical-offset="4710">
+          <folding>
+            <element signature="e#24#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utilities.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="218" column="0" selection-start="6074" selection-end="6074" vertical-scroll-proportion="0.0" vertical-offset="3270" max-vertical-offset="4575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="495">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../music21/musicxml/m21ToXml.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="353" column="8" selection-start="10379" selection-end="10379" vertical-scroll-proportion="0.0" vertical-offset="5295" max-vertical-offset="66705">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/barlicity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="537" column="0" selection-start="24043" selection-end="24043" vertical-scroll-proportion="0.0" vertical-offset="8055" max-vertical-offset="8190">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="185" column="34" selection-start="8116" selection-end="8116" vertical-scroll-proportion="0.0" vertical-offset="2775" max-vertical-offset="5835">
+          <folding>
+            <element signature="e#24#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../music21/musicxml/m21ToXml.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="353" column="8" selection-start="10379" selection-end="10379" vertical-scroll-proportion="0.0" vertical-offset="5295" max-vertical-offset="66705">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/barlicity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="539" column="39" selection-start="24125" selection-end="24125" vertical-scroll-proportion="0.0" vertical-offset="8085" max-vertical-offset="8175">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="222" column="80" selection-start="10204" selection-end="10204" vertical-scroll-proportion="0.0" vertical-offset="3330" max-vertical-offset="5775">
+          <folding>
+            <element signature="e#24#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/barlicity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="539" column="39" selection-start="24125" selection-end="24125" vertical-scroll-proportion="0.0" vertical-offset="8085" max-vertical-offset="8175">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="359" column="3" selection-start="16290" selection-end="16290" vertical-scroll-proportion="0.0" vertical-offset="5370" max-vertical-offset="5370">
+          <folding>
+            <element signature="e#24#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/barlicity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="539" column="39" selection-start="24125" selection-end="24125" vertical-scroll-proportion="0.0" vertical-offset="8085" max-vertical-offset="8175">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="112" column="0" selection-start="4693" selection-end="4693" vertical-scroll-proportion="0.0" vertical-offset="1680" max-vertical-offset="3495">
+          <folding>
+            <element signature="e#24#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="0" selection-start="879" selection-end="879" vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../music21/stream/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11629" column="8" selection-start="460305" selection-end="460305" vertical-scroll-proportion="2.3010752" vertical-offset="172750" max-vertical-offset="188205" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../music21/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="0" selection-start="2226" selection-end="2226" vertical-scroll-proportion="-1.4691358" vertical-offset="1836" max-vertical-offset="2565" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="480">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../music21/musicxml/m21ToXml.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="353" column="8" selection-start="10379" selection-end="10379" vertical-scroll-proportion="0.0" vertical-offset="41087" max-vertical-offset="66615">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10588" max-vertical-offset="15735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="1" max-vertical-offset="4500">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/barlicity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="0" selection-start="2168" selection-end="2168" vertical-scroll-proportion="0.0" vertical-offset="1262" max-vertical-offset="7830">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utilities.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="225" column="0" selection-start="6061" selection-end="6061" vertical-scroll-proportion="0.0" vertical-offset="3114" max-vertical-offset="4845">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="393" column="36" selection-start="20599" selection-end="20599" vertical-scroll-proportion="0.67099565" vertical-offset="5430" max-vertical-offset="9240">
+          <folding>
+            <element signature="e#24#46#0" expanded="true" />
           </folding>
         </state>
       </provider>

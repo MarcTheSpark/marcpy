@@ -5,7 +5,7 @@ from playcorder import *
 
 class ChuckPlaycorderInstrument:
 
-    def __init__(self, file_path, osc_message_address, args=[], host_playcorder=None, name=None):
+    def __init__(self, file_path, osc_message_address, args=(), host_playcorder=None, name=None):
         assert isinstance(host_playcorder, Playcorder) or host_playcorder is None
         self.host_playcorder = host_playcorder
         self.osc_message_address = osc_message_address

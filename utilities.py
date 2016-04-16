@@ -103,44 +103,6 @@ def get_pitch_class_description(pitch_class, accidental_type="standard"):
 
     return pc_name
 
-def cyclic_slice(l, start, end):
-    # m
-    """
-    takes a slice that loops back to the beginning if end is before start
-    :param l(list): the list to slice
-    :param start(int): start index
-    :param end(int): end index
-    :return: list
-    """
-
-    if end >= start:
-        # start by making both indices positive, since that's easier to handle
-        while start < 0 or end < 0:
-            start += len(l)
-            end += len(l)
-        if end >= start + len(l):
-            out = []
-            while end - start >= len(l):
-                out.extend(l[start:] + l[:start])
-                end -= len(l)
-            out += cyclic_slice(l, start, end)
-            return out
-        else:
-            end = end % len(l)
-            start = start % len(l)
-            if end >= start:
-                return l[start:end]
-            else:
-                return l[start:] + l[:end]
-    else:
-        # if the end is before the beginning, we do a backwards slice
-        # basically this means we reverse the list, and recalculate the start and end
-        new_start = len(l)-start-1
-        new_end = len(l)-end-1
-        new_list = list(l)
-        new_list.reverse()
-        return cyclic_slice(new_list, new_start, new_end)
-
 
 def get_interval_cycle_length(cycle_size):
     x = cycle_size
@@ -163,7 +125,7 @@ def get_interval_cycle_distance(pc1, pc2, cycle_size):
         return cycle_length-distance
     return distance
 
-
+# took this disgustingly unreadable function from somewhere
 ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(int(n/10)%10!=1)*(n%10<4)*n%10::4])
 
 
@@ -173,6 +135,17 @@ def is_x_pow_of_y(x, y):
         return True
     else:
         return False
+
+
+def floor_x_to_pow_of_y(x, y):
+    a = math.log(x, y)
+    return y ** int(a)
+
+
+def round_x_to_pow_of_y(x, y):
+    a = math.log(x, y)
+
+    return y ** (int(round(a)) if isinstance(y, int) else round(a))
 
 
 def midi_to_freq(midi_val):
@@ -186,33 +159,17 @@ def freq_to_midi(frequency):
 def cents_to_ratio(cents):
     return 2**(cents/1200.0)
 
+
 def ratio_to_cents(ratio):
     return math.log(ratio)/math.log(2) * 1200.0
 
 
-def get_interpolated_array_value(array, index, power=1, cyclic=False):
-    # some special cases
-    if index < 0:
-        if cyclic:
-            index = index % len(array)
-        else:
-            return array[0]
-    elif index >= len(array)-1:
-        if cyclic:
-            index = index % len(array)
-        else:
-            return  array[-1]
-    elif index == int(index):
-        return array[int(index)]
-
-    lower_index_value = array[int(index)]
-    upper_index_value = array[(int(index)+1) % len(array)]
-    progress_to_next = (index - int(index))**power
-    return lower_index_value * (1 - progress_to_next) + upper_index_value * progress_to_next
-
-
 def round_to_multiple(x, factor):
     return round(x/factor)*factor
+
+
+def is_multiple(x, y):
+    return round_to_multiple(x, y) == x
 
 
 def get_bracketed_text(string, start_bracket, end_bracket):
@@ -253,7 +210,41 @@ def get_rejection_of_a_onto_b(a, b):
     assert isinstance(b, np.ndarray) and a.ndim == 1
     return a - np.dot(a, b) * b / np.linalg.norm(b)**2
 
-# list stuff
+# --------------------- list stuff ---------------------------
+
+
+def make_flat_list(*args):
+    l = list(args)
+    i = 0
+    while i < len(l):
+        if hasattr(l[i], "__len__"):
+            l = l[:i] + l[i] + l[i+1:]
+        else:
+            i += 1
+    return l
+
+
+def get_interpolated_array_value(array, index, power=1, cyclic=False):
+    # some special cases
+    if index < 0:
+        if cyclic:
+            index = index % len(array)
+        else:
+            return array[0]
+    elif index >= len(array)-1:
+        if cyclic:
+            index = index % len(array)
+        else:
+            return  array[-1]
+    elif index == int(index):
+        return array[int(index)]
+
+    lower_index_value = array[int(index)]
+    upper_index_value = array[(int(index)+1) % len(array)]
+    progress_to_next = (index - int(index))**power
+    return lower_index_value * (1 - progress_to_next) + upper_index_value * progress_to_next
+
+
 def get_closest_index(myList, value):
     """
     Assumes myList is sorted. Returns closest value to myNumber.
@@ -271,6 +262,45 @@ def get_closest_index(myList, value):
        return pos
     else:
        return pos - 1
+
+
+def cyclic_slice(l, start, end):
+    # m
+    """
+    takes a slice that loops back to the beginning if end is before start
+    :param l(list): the list to slice
+    :param start(int): start index
+    :param end(int): end index
+    :return: list
+    """
+
+    if end >= start:
+        # start by making both indices positive, since that's easier to handle
+        while start < 0 or end < 0:
+            start += len(l)
+            end += len(l)
+        if end >= start + len(l):
+            out = []
+            while end - start >= len(l):
+                out.extend(l[start:] + l[:start])
+                end -= len(l)
+            out += cyclic_slice(l, start, end)
+            return out
+        else:
+            end = end % len(l)
+            start = start % len(l)
+            if end >= start:
+                return l[start:end]
+            else:
+                return l[start:] + l[:end]
+    else:
+        # if the end is before the beginning, we do a backwards slice
+        # basically this means we reverse the list, and recalculate the start and end
+        new_start = len(l)-start-1
+        new_end = len(l)-end-1
+        new_list = list(l)
+        new_list.reverse()
+        return cyclic_slice(new_list, new_start, new_end)
 
 
 class CyclingTuple:

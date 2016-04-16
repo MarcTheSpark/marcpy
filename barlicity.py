@@ -3,6 +3,7 @@ import math
 import itertools
 from fractions import Fraction
 
+
 # ---------------------------------------------- Utility Functions -------------------------------------------------
 # decorator that saves function output
 def save_answers(func):
@@ -18,6 +19,7 @@ def save_answers(func):
             return ans
 
     return func_wrapper
+
 
 def gcd(a, b):
     """Return greatest common divisor using Euclid's Algorithm."""
@@ -86,30 +88,6 @@ def get_nth_prime(n):
 
 def gaussian_discount(x, center, standard_deviation):
     return math.exp(-(x-center)**2/(2*standard_deviation**2))
-
-
-# utility for counting up quantities of primes
-class PrimeCount(list):
-
-    def increment_prime(self, n):
-        while n >= len(self):
-            self.append(0)
-        self[n] += 1
-
-    def __add__(self, other):
-        assert isinstance(other, list)
-        new_count = []
-        for i in range(max(len(self), len(other))):
-            self_count = self[i] if i < len(self) else 0
-            other_count = other[i] if i < len(other) else 0
-            new_count.append(self_count + other_count)
-        return PrimeCount(new_count)
-
-    @classmethod
-    def single_prime(cls, n):
-        x = cls()
-        x.increment_prime(n)
-        return x
 
 
 # ---------------------------------------- Indigestibility and Harmonicity ------------------------------------------
@@ -535,8 +513,7 @@ def calculate_metric_similarity(rhythmic_strata_away, bar_tempo_away, rhythmic_s
 def freq_to_bark(f):
     return 13.3 * math.atan(0.75*f/1000.0)
 
+
 # the inverse formula
 def bark_to_freq(b):
     return math.tan(b/13.3)*1000.0/0.75
-
-print sorted([(a, b, abs(harmonicity(a, b))) for (a, b) in ((1, 1), (16, 15), (10, 9), (6, 5), (5, 4), (4, 3), (64, 45), (3, 2), (8, 5), (5, 3), (16, 9), (15, 8), (2, 1))], key = lambda x : x[2])
