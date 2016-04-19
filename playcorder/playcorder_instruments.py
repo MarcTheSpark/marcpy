@@ -16,7 +16,7 @@ class ChuckPlaycorderInstrument:
         self.chuck_instrument.send_message(self.osc_message_address, [float(pitch), float(volume),
                                                                       float(length), float(start_delay)])
         if self.host_playcorder:
-            self.host_playcorder.record_note(self, pitch, volume, length, start_delay, variant=variant)
+            self.host_playcorder.record_note(self, pitch, volume, length, start_delay)
 
 
 class ChuckMultiSamplePlayer:
@@ -88,11 +88,11 @@ class ChuckMultiSamplePlayer:
     def play_note(self, pitch, volume, length, start_delay=0, variant="norm", text_annotation=None, written_length=None):
         # check that it's playable before sending it to the dangerous chuck player:
         if pitch in self.path_dictionary:
-            if (not isinstance(self.path_dictionary[pitch], dict) and variant == "norm")\
+            if (not isinstance(self.path_dictionary[pitch], dict) and variant == "norm") \
                     or variant in self.path_dictionary[pitch]:
                 # it's playable
                 thread.start_new_thread(self.play_note_thread, (pitch, variant, volume, length, start_delay))
 
         if self.host_playcorder:
             self.host_playcorder.record_note(self, pitch, volume, length if written_length is None else written_length,
-                                             start_delay=start_delay, variant=variant, text_annotation=text_annotation)
+                                             start_delay=start_delay)

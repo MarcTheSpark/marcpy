@@ -213,15 +213,16 @@ def get_rejection_of_a_onto_b(a, b):
 # --------------------- list stuff ---------------------------
 
 
-def make_flat_list(*args):
-    l = list(args)
+def make_flat_list(l, indivisible_type=None):
+    # indivisible_type is a type that we don't want to divide,
+    new_list = list(l)
     i = 0
-    while i < len(l):
-        if hasattr(l[i], "__len__"):
-            l = l[:i] + l[i] + l[i+1:]
+    while i < len(new_list):
+        if hasattr(new_list[i], "__len__") and not isinstance(new_list[i], indivisible_type):
+            new_list = new_list[:i] + new_list[i] + new_list[i+1:]
         else:
             i += 1
-    return l
+    return new_list
 
 
 def get_interpolated_array_value(array, index, power=1, cyclic=False):

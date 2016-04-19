@@ -11,6 +11,11 @@ import os
 from marcpy.utilities import get_relative_file_path
 
 
+_supercollider_process = None
+_supercollider_listener = None
+_py_to_supercollider_client = None
+
+
 if getattr(sys, 'frozen', False):
     # running from a compiled application
     executable_path = get_relative_file_path("Resources/supercollider/sclang")
@@ -22,49 +27,59 @@ else:
     sc_directory = get_relative_file_path("executable")
     sc_file_runner_path = get_relative_file_path("executable/FileRunner.scd")
 
+
+def is_running():
+    return _supercollider_process is not None
+
+
 def _pick_unused_port():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(('localhost', 0))
-    addr, port = s.getsockname()
+    address, port = s.getsockname()
     s.close()
     return port
 
-_supercollider_process = None
-_supercollider_listener = None
-_py_to_supercollider_client = None
-
 
 def kill_supercollider():
+    global _supercollider_process, _supercollider_listener, _py_to_supercollider_client
     if _supercollider_process is not None:
         _supercollider_process.kill()
+        _supercollider_process = None
         os.system("killall scsynth")
         # subprocess.call(["killall", "scsynth"])
     if _supercollider_listener is not None:
         _supercollider_listener.close()
+        _supercollider_listener = None
+    if _py_to_supercollider_client is not None:
+        _py_to_supercollider_client.close()
+        _py_to_supercollider_client = None
 
 atexit.register(kill_supercollider)
 
 
 def start_supercollider(callback_when_ready=None):
-    global _supercollider_process, _supercollider_listener, \
-        executable_path, sc_directory, sc_file_runner_path
+    if not is_running():
+        global _supercollider_process, _supercollider_listener, \
+            executable_path, sc_directory, sc_file_runner_path
 
-    port = _pick_unused_port()
-    _supercollider_listener = OSC.OSCServer(('127.0.0.1', port))
-    _supercollider_listener.addDefaultHandlers()
+        port = _pick_unused_port()
+        _supercollider_listener = OSC.OSCServer(('127.0.0.1', port))
+        _supercollider_listener.addDefaultHandlers()
 
-    def sc_port_received(addr, tags, stuff, source):
-        global _py_to_supercollider_client
-        print "SuperCollider started and listening on port", stuff[0]
-        _py_to_supercollider_client = OSC.OSCClient()
-        _py_to_supercollider_client.connect(( '127.0.0.1', stuff[0] ))
-        if callback_when_ready is not None:
-            callback_when_ready()
+        def sc_port_received(addr, tags, stuff, source):
+            global _py_to_supercollider_client
+            print "SuperCollider started and listening on port", stuff[0]
+            _py_to_supercollider_client = OSC.OSCClient()
+            _py_to_supercollider_client.connect(( '127.0.0.1', stuff[0] ))
+            if callback_when_ready is not None:
+                callback_when_ready()
 
-    _supercollider_listener.addMsgHandler("/sendPort", sc_port_received) #OSC client automatically sends sample rate data, just routing to do mostly nothing
-    thread.start_new_thread(_supercollider_listener.serve_forever, ())
+        _supercollider_listener.addMsgHandler("/sendPort", sc_port_received)
+        thread.start_new_thread(_supercollider_listener.serve_forever, ())
 
-    _supercollider_process = subprocess.Popen([executable_path, "-d", sc_directory, sc_file_runner_path, str(port)])
+        _supercollider_process = subprocess.Popen([executable_path, "-d", sc_directory, sc_file_runner_path, str(port)])
+    else:
+        print "Tried to start supercollider, but it was already running"
 
 
 def run_file(file_path):
@@ -91,4 +106,4 @@ def send_sc_message(address, data):
         the_msg.append(datum)
     _py_to_supercollider_client.send(the_msg)
 
-# start_supercollider(callback_when_ready=lambda : run_file(get_relative_file_path("executable/Test.scd")))
+# start_supercollider(callback_when_ready=lambda: run_file(get_relative_file_path("executable/Test.scd")))

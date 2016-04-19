@@ -1,24 +1,55 @@
 __author__ = 'mpevans'
 
-import localfluidsynth
-import time
-import thread
 from collections import namedtuple
+from xml.etree.ElementTree import ElementTree
+from fractions import Fraction
+
+from music21 import musicxml
+from music21.stream import Voice, Part, Score
+from music21 import instrument
+from music21.note import Note, Rest
+from music21.chord import Chord
+from music21.pitch import Pitch
+from music21.tie import Tie
+from music21.tempo import MetronomeMark
+from music21.meter import TimeSignature
+from music21.exceptions21 import InstrumentException
+
+import localfluidsynth
 from marcpy.chuck.chuck import *
 from marcpy import utilities
 from marcpy import barlicity
-from music21 import converter
-from music21 import musicxml
-from music21.stream import Voice, Part, Score
-from music21.note import Note, Rest
-from music21.pitch import Pitch
-from music21.tempo import MetronomeMark
-from music21.meter import TimeSignature
-from xml.etree.ElementTree import ElementTree
 from MidiFile import MIDIFile
-from fractions import Fraction
+from marcpy.usefulimports.interval import IntervalSet
 
-PCNote = namedtuple("PCNote", "start_time length pitch volume variant")
+
+# from music21 import corpus
+# sBach = corpus.parse('bach/bwv57.8')
+# sBach.show("text")
+# exit()
+# sop = sBach[1]
+# assert isinstance(sop, Part)
+# inst = sop[0]
+# # print instrument.fromString("Violin")
+# assert isinstance(inst, instrument.Instrument)
+# exit()
+
+
+class PCNote:
+    def __init__(self, start_time, length, pitch, volume, variant=None, tie=None):
+        self.start_time = start_time
+        self.length = length
+        self.pitch = pitch
+        self.volume = volume
+        self.variant = variant
+        self.tie = tie
+        self.start_time_divisor = None
+        self.end_time_divisor = None
+
+    def __repr__(self):
+        return "PCNote(start_time={}, length={}, pitch={}, volume={}, variant={}, tie={})".format(
+            self.start_time, self.length, self.pitch, self.volume, self.variant, self.tie
+        )
 
 
 class BeatQuantizationScheme:
@@ -84,18 +115,18 @@ class BeatQuantizationScheme:
                                         for di in div_indigestibilities]
                 self.quantization_divisions = zip(quantization_divisions, div_undesirabilities)
 
+    def __str__(self):
+        return "BeatQuantizationScheme [tempo=" + str(self.tempo) + ", beat_length=" + str(self.beat_length) + \
+               ", quantization_divisions=" + str(self.quantization_divisions) + "]"
+
 
 class MeasureScheme:
 
     def __init__(self, time_signature, beat_quantization_schemes):
         # time_signature is either a tuple, e.g. (3, 4), or a string, e.g. "3/4"
-        if isinstance(time_signature, str):
-            self.string_time_signature = time_signature
-            tuple_time_signature = tuple(time_signature.split("/"))
-        else:
-            tuple_time_signature = tuple(time_signature)
-            self.string_time_signature = str(time_signature[0]) + "/" + str(time_signature[1])
-        measure_length_in_quarters = tuple_time_signature[0]*4/float(tuple_time_signature[1])
+        self.string_time_signature, self.tuple_time_signature = MeasureScheme.time_sig_to_string_and_tuple(time_signature)
+        # in quarter notes
+        self.measure_length = self.tuple_time_signature[0]*4/float(self.tuple_time_signature[1])
 
         # either we give a list of beat_quantization schemes or a single beat quantization scheme to use for all beats
         if hasattr(beat_quantization_schemes, "__len__"):
@@ -103,13 +134,60 @@ class MeasureScheme:
             for beat_quantization_scheme in beat_quantization_schemes:
                 assert isinstance(beat_quantization_scheme, BeatQuantizationScheme)
                 total_length += beat_quantization_scheme.beat_length
-            assert total_length == measure_length_in_quarters
+            assert total_length == self.measure_length
             self.beat_quantization_schemes = beat_quantization_schemes
         else:
             assert isinstance(beat_quantization_schemes, BeatQuantizationScheme)
-            assert utilities.is_multiple(measure_length_in_quarters, beat_quantization_schemes.beat_length)
+            assert utilities.is_multiple(self.measure_length, beat_quantization_schemes.beat_length)
             self.beat_quantization_schemes = [beat_quantization_schemes] * \
-                int(round(measure_length_in_quarters /beat_quantization_schemes.beat_length))
+                int(round(self.measure_length / beat_quantization_schemes.beat_length))
+
+    @staticmethod
+    def time_sig_to_string_and_tuple(time_signature):
+        if isinstance(time_signature, str):
+            string_time_signature = time_signature
+            tuple_time_signature = tuple([int(x) for x in time_signature.split("/")])
+        else:
+            tuple_time_signature = tuple(time_signature)
+            string_time_signature = str(time_signature[0]) + "/" + str(time_signature[1])
+        return string_time_signature, tuple_time_signature
+
+    @classmethod
+    def from_time_signature(cls, time_signature, tempo, max_divisions=8, max_indigestibility=4, simplicity_preference=0.2):
+        # it would be good to be able to handle ((2, 3, 2), 8) or "2+3+2/8"
+        _, tuple_time_signature = MeasureScheme.time_sig_to_string_and_tuple(time_signature)
+        measure_length = tuple_time_signature[0] * 4.0 / tuple_time_signature[1]
+        assert utilities.is_x_pow_of_y(tuple_time_signature[1], 2)
+        if tuple_time_signature[1] <= 4:
+            beat_length = 4.0 / tuple_time_signature[1]
+            num_beats = int(round(measure_length/beat_length))
+            beat_quantization_schemes = [BeatQuantizationScheme(tempo, beat_length, max_divisions=max_divisions,
+                                                                max_indigestibility=max_indigestibility,
+                                                                simplicity_preference=simplicity_preference)] * num_beats
+        else:
+            # we're dealing with a denominator of 8, 16, etc., so either we have a compound meter, or an uneven meter
+            if utilities.is_multiple(tuple_time_signature[0], 3):
+                beat_length = 4.0 / tuple_time_signature[1] * 3
+                num_beats = int(round(measure_length/beat_length))
+                beat_quantization_schemes = [BeatQuantizationScheme(tempo, beat_length, max_divisions=max_divisions,
+                                                                    max_indigestibility=max_indigestibility,
+                                                                    simplicity_preference=simplicity_preference)] * num_beats
+            else:
+                duple_beat_length = 4.0 / tuple_time_signature[1] * 2
+                triple_beat_length = 4.0 / tuple_time_signature[1] * 3
+                if utilities.is_multiple(tuple_time_signature[0], 2):
+                    num_duple_beats = int(round(measure_length/duple_beat_length))
+                    num_triple_beats = 0
+                else:
+                    num_duple_beats = int(round((measure_length-triple_beat_length)/duple_beat_length))
+                    num_triple_beats = 1
+                beat_quantization_schemes = [BeatQuantizationScheme(tempo, duple_beat_length, max_divisions=max_divisions,
+                                                                    max_indigestibility=max_indigestibility,
+                                                                    simplicity_preference=simplicity_preference)] * num_duple_beats + \
+                                            [BeatQuantizationScheme(tempo, triple_beat_length, max_divisions=max_divisions,
+                                                                    max_indigestibility=max_indigestibility,
+                                                                    simplicity_preference=simplicity_preference)] * num_triple_beats
+        return cls(time_signature, beat_quantization_schemes)
 
 
 class Playcorder:
@@ -217,7 +295,7 @@ class Playcorder:
                 note_start_time = self.get_time_passed() + start_delay
             instrument.recording.append(PCNote(start_time=note_start_time,
                                                length=length if written_length is None else written_length,
-                                               pitch=pitch, volume=volume, variant=variant_dictionary))
+                                               pitch=pitch, volume=volume, variant=variant_dictionary, tie=None))
 
     def get_time_passed(self):
         if self.parts_being_recorded is not None:
@@ -257,7 +335,77 @@ class Playcorder:
     def register_time_passed(self, seconds):
         self.time_passed += seconds
 
-    # ----------------------------------- Saving Output ----------------------------------
+    # ---------------------------------------- SAVING TO XML ----------------------------------------------
+
+    def save_to_xml_file(self, name, measure_schemes=None, time_signature="4/4", tempo=60, max_divisions=8,
+                         max_indigestibility=4, simplicity_preference=0.2):
+
+        print "Saving Output..."
+        if measure_schemes is None:
+            measure_schemes = [MeasureScheme.from_time_signature(time_signature, tempo, max_divisions=max_divisions,
+                                                                 max_indigestibility=max_indigestibility,
+                                                                 simplicity_preference=simplicity_preference)]
+        beat_schemes = []
+        for ms in measure_schemes:
+            beat_schemes.extend(ms.beat_quantization_schemes)
+
+        measure_break_points, beat_break_points = Playcorder.get_measure_and_beat_break_points(measure_schemes, 30)
+
+        m21_score = Score()
+        for i, part in enumerate(self.parts_recorded):
+            print "Working on Part " + str(i+1) + "..."
+
+            # quantize the part, merge notes into chords, and separate it into non-overlapping voices
+            quantized_separated_voices = Playcorder._separate_into_non_overlapping_voices(
+                Playcorder._collapse_recording_chords(
+                    Playcorder._quantize_recording(part.recording, beat_schemes)
+                ), 0.001
+            )
+
+            for voice in quantized_separated_voices:
+                voice = Playcorder.raw_voice_to_pretty_looking_voice(voice ,measure_break_points, beat_break_points)
+
+            exit()
+
+            # make the music21 part object, and add the instrument
+            m21_part = Part(id=part.name)
+            try:
+                m21_part.append(instrument.fromString(part.name))
+            except InstrumentException:
+                m21_part.append(instrument.Piano())
+
+            for voice in voices:
+                voice = Playcorder._break_into_ties(voice, beat_schemes)
+                voice = Playcorder._add_rests(voice, beat_schemes)
+                # print voice
+                # print Playcorder._m21voice_from_pc_voice(voice)
+                m21_part.insert(0, Playcorder._m21voice_from_pc_voice(voice))
+            m21_score.insert(0, m21_part)
+
+        # add in the time signatures
+        current_beat = 0
+        current_time_signature = None
+        for measure_scheme in measure_schemes:
+            if measure_scheme.string_time_signature != current_time_signature:
+                m21_score.insert(current_beat, TimeSignature(measure_scheme.string_time_signature))
+                current_time_signature = measure_scheme.string_time_signature
+            current_beat += measure_scheme.measure_length
+
+        current_beat = 0
+        current_tempo = None
+        for beat_scheme in beat_schemes:
+            assert isinstance(beat_scheme, BeatQuantizationScheme)
+            if beat_scheme.tempo != current_tempo:
+                m21_score.insert(current_beat, MetronomeMark(number=beat_scheme.tempo))
+                current_tempo = beat_scheme.tempo
+            current_beat += beat_scheme.beat_length
+
+        gex = musicxml.m21ToXml.GeneralObjectExporter()
+        sx = musicxml.m21ToXml.ScoreExporter(gex.fromGeneralObject(m21_score))
+        mx_score = sx.parse()
+        ElementTree(mx_score).write(name)
+
+    # [ ------- Part Processing ------- ]
 
     @staticmethod
     def _quantize_recording(recording_in_seconds, beat_schemes, onset_termination_weighting=0.3):
@@ -276,10 +424,11 @@ class Playcorder:
         raw_onsets.sort(key=lambda x: x[0])
         raw_terminations.sort(key=lambda x: x[0])
 
-        pc_note_to_quantized_start_time = {}
-        pc_note_to_quantized_end_time = {}
+        pc_note_to_quantize_start_time = {}
+        pc_note_to_quantize_end_time = {}
         current_beat_scheme = 0
-        beat_start_time = 0
+        quarters_beat_start_time = 0.0
+        seconds_beat_start_time = 0.0
         while len(raw_onsets) + len(raw_terminations) > 0:
             # move forward one beat at a time
             # get the beat scheme for this beat
@@ -288,51 +437,77 @@ class Playcorder:
             if current_beat_scheme + 1 < len(beat_schemes):
                 current_beat_scheme += 1
 
-            this_beat_seconds_length = this_beat_scheme.beat_length * 60.0 / this_beat_scheme.tempo
-            beat_end_time = beat_start_time + this_beat_seconds_length
+            # get the beat length and end time in quarters and seconds
+            quarters_beat_length = this_beat_scheme.beat_length
+            seconds_beat_length = this_beat_scheme.beat_length * 60.0 / this_beat_scheme.tempo
+            quarters_beat_end_time = quarters_beat_start_time + this_beat_scheme.beat_length
+            seconds_beat_end_time = seconds_beat_start_time + seconds_beat_length
 
             # find the onsets in this beat
             onsets_to_quantize = []
-            while len(raw_onsets) > 0 and raw_onsets[0][0] < beat_end_time:
+            while len(raw_onsets) > 0 and raw_onsets[0][0] < seconds_beat_end_time:
                 onsets_to_quantize.append(raw_onsets.pop(0))
 
             # find the terminations in this beat
             terminations_to_quantize = []
-            while len(raw_terminations) > 0 and raw_terminations[0][0] < beat_end_time:
+            while len(raw_terminations) > 0 and raw_terminations[0][0] < seconds_beat_end_time:
                 terminations_to_quantize.append(raw_terminations.pop(0))
 
             # try out each quantization division
             best_divisor = None
             best_error = float("inf")
             for divisor, undesirability in this_beat_scheme.quantization_divisions:
-                piece_length = this_beat_scheme.beat_length / divisor
+                seconds_piece_length = seconds_beat_length / divisor
                 total_squared_onset_error = 0
                 for onset in onsets_to_quantize:
-                    total_squared_onset_error += (onset[0] - utilities.round_to_multiple(onset[0] - beat_start_time, piece_length)) ** 2
+                    time_since_beat_start = onset[0] - seconds_beat_start_time
+                    total_squared_onset_error += (time_since_beat_start - utilities.round_to_multiple(time_since_beat_start, seconds_piece_length)) ** 2
                 total_squared_term_error = 0
                 for term in terminations_to_quantize:
-                    total_squared_term_error += (term[0] - utilities.round_to_multiple(term[0] - beat_start_time, piece_length)) ** 2
+                    time_since_beat_start = term[0] - seconds_beat_start_time
+                    total_squared_term_error += (time_since_beat_start - utilities.round_to_multiple(time_since_beat_start, seconds_piece_length)) ** 2
                 this_div_error_score = undesirability * (onset_termination_weighting * total_squared_term_error +
                                                          (1 - onset_termination_weighting) * total_squared_onset_error)
                 if this_div_error_score < best_error:
                     best_divisor = divisor
                     best_error = this_div_error_score
 
-            best_piece_length = this_beat_scheme.beat_length / best_divisor
-            for onset, pc_note in onsets_to_quantize:
-                pc_note_to_quantized_start_time[pc_note] = beat_start_time + utilities.round_to_multiple(onset - beat_start_time, best_piece_length)
-            for termination, pc_note in terminations_to_quantize:
-                pc_note_to_quantized_end_time[pc_note] = beat_start_time + utilities.round_to_multiple(termination - beat_start_time, best_piece_length)
-                if pc_note_to_quantized_end_time[pc_note] == pc_note_to_quantized_start_time[pc_note]:
-                    # if the quantization collapses the start and end times of a note to the same point, adjust the
-                    # end time so the the not is a single piece_length long. Not perfect, but better than deleting
-                    pc_note_to_quantized_end_time[pc_note] += best_piece_length
-            beat_start_time += this_beat_seconds_length
+            best_piece_length_quarters = this_beat_scheme.beat_length / best_divisor
+            best_piece_length_seconds = seconds_beat_length / best_divisor
 
-        return [PCNote(start_time=pc_note_to_quantized_start_time[pc_note],
-                length=pc_note_to_quantized_end_time[pc_note] - pc_note_to_quantized_start_time[pc_note],
-                pitch=pc_note.pitch, volume=pc_note.volume, variant=pc_note.variant)
-                for pc_note in recording_in_seconds]
+            for onset, pc_note in onsets_to_quantize:
+                pieces_past_beat_start = round((onset - seconds_beat_start_time) / best_piece_length_seconds)
+                pc_note_to_quantize_start_time[pc_note] = quarters_beat_start_time + pieces_past_beat_start * best_piece_length_quarters
+                # save this info for later, when we need to assure they all have the same Tuplet
+                pc_note.start_time_divisor = best_divisor
+
+            for termination, pc_note in terminations_to_quantize:
+                pieces_past_beat_start = round((termination - seconds_beat_start_time) / best_piece_length_seconds)
+                pc_note_to_quantize_end_time[pc_note] = quarters_beat_start_time + pieces_past_beat_start * best_piece_length_quarters
+                if pc_note_to_quantize_end_time[pc_note] == pc_note_to_quantize_start_time[pc_note]:
+                    # if the quantization collapses the start and end times of a note to the same point, adjust the
+                    # end time so the the note is a single piece_length long.
+                    if pc_note_to_quantize_end_time[pc_note] + best_piece_length_quarters <= quarters_beat_end_time:
+                        # unless both are quantized to the start of the next beat, just move the end one piece forward
+                        pc_note_to_quantize_end_time[pc_note] += best_piece_length_quarters
+                    else:
+                        # if they're at the start of the next beat, move the start one piece back
+                        pc_note_to_quantize_start_time[pc_note] -= best_piece_length_quarters
+                # save this info for later, when we need to assure they all have the same Tuplet
+                pc_note.end_time_divisor = best_divisor
+
+            quarters_beat_start_time += quarters_beat_length
+            seconds_beat_start_time += seconds_beat_length
+
+        quantized_recording = []
+        for pc_note in recording_in_seconds:
+            quantized_recording.append(PCNote(start_time=pc_note_to_quantize_start_time[pc_note],
+                                       length=pc_note_to_quantize_end_time[pc_note] - pc_note_to_quantize_start_time[pc_note],
+                                       pitch=pc_note.pitch, volume=pc_note.volume, variant=pc_note.variant, tie=pc_note.tie))
+            quantized_recording[-1].start_time_divisor = pc_note.start_time_divisor
+            quantized_recording[-1].end_time_divisor = pc_note.end_time_divisor
+
+        return quantized_recording
 
     @staticmethod
     def _collapse_recording_chords(recording):
@@ -343,9 +518,9 @@ class Playcorder:
         while i + 1 < len(out):
             if out[i].start_time == out[i+1].start_time and out[i].length == out[i+1].length \
                     and out[i].volume == out[i+1].volume and out[i].variant == out[i+1].variant:
-                chord_pitches = utilities.make_flat_list(out[i].pitch, out[i+1].pitch)
+                chord_pitches = utilities.make_flat_list([out[i].pitch, out[i+1].pitch])
                 out = out[:i] + [PCNote(start_time=out[i].start_time, length=out[i].length, pitch=chord_pitches,
-                                 volume=out[i].volume, variant=out[i].variant)] + out[i+2:]
+                                 volume=out[i].volume, variant=out[i].variant, tie=out[i].tie)] + out[i+2:]
             else:
                 i += 1
         # Now split it into non-overlapping voices, and then we're good.
@@ -372,45 +547,129 @@ class Playcorder:
 
         return voices
 
-    # Make this a save to MIDI, and give options for the search tree
-    def save_to_xml_file(self, tempo=60, time_signature="4/4", max_overlap=0.01, name=None, quantization_divisions=(4,)):
-        print "Saving Output..."
+    # [ ------- Voice Pre-Processing ------- ]
 
-        # scale the note lengths up by this factor, since we recorded them in seconds, not beats
-        tempo_scaling_factor = tempo/60.0
-        m21_score = Score()
-        for i, part in enumerate(self.parts_recorded):
-            print "Working on Part " + str(i+1) + "..."
-            voices = Playcorder._separate_into_non_overlapping_voices(part.recording, max_overlap)
-            m21_part = Part()
-            for voice in voices:
-                m21_voice = Voice()
-                # current_beat = 0
-                for pc_note in voice:
-                    assert isinstance(pc_note, PCNote)
-                    scaled_start_time = pc_note.start_time*tempo_scaling_factor
-                    note_beat_length = pc_note.length * tempo_scaling_factor
-                    the_note = Note(Pitch(pc_note.pitch), quarterLength=note_beat_length)
-                    m21_voice.insert(scaled_start_time, the_note)
-                m21_voice.quantize(quantization_divisions, processOffsets=True, processDurations=True, inPlace=True)
-                new_m21_voice = Voice()
-                current_beat = 0
+    @staticmethod
+    def get_measure_and_beat_break_points(measure_schemes, total_length):
+        # returns a list of break points; handy for splitting notes into tied components
+        measure_break_points = []
+        beat_break_points = []
 
-                for m21Note in m21_voice:
-                    if m21Note.offset > current_beat:
-                        new_m21_voice.append(Rest(quarterLength = m21Note.offset - current_beat))
-                        current_beat += m21Note.offset - current_beat
-                    new_m21_voice.append(m21Note)
-                    current_beat += m21Note.quarterLength
-                m21_part.insert(0, TimeSignature(time_signature))
-                m21_part.insert(0, new_m21_voice)
-            m21_score.insert(0, m21_part)
-        m21_score.insert(MetronomeMark(number=tempo))
-        gex = musicxml.m21ToXml.GeneralObjectExporter()
-        sx = musicxml.m21ToXml.ScoreExporter(gex.fromGeneralObject(m21_score))
-        mx_score = sx.parse()
+        which_measure_scheme = 0
+        current_measure_start_time = 0.0
+        while current_measure_start_time < total_length:
+            current_measure_scheme = measure_schemes[which_measure_scheme]
+            assert isinstance(current_measure_scheme, MeasureScheme)
+            # add the measure break points
+            measure_break_points.append(current_measure_start_time)
+            # add the beat break points
+            beat_start_displacement = 0.0
+            for beat_scheme in current_measure_scheme.beat_quantization_schemes:
+                assert isinstance(beat_scheme, BeatQuantizationScheme)
+                beat_break_points.append(current_measure_start_time + beat_start_displacement)
+                beat_start_displacement += beat_scheme.beat_length
 
-        ElementTree(mx_score).write(name)
+            # move to the next measure
+            current_measure_start_time += current_measure_scheme.measure_length
+            # move to the next measure scheme, if there is another, otherwise keep repeating the last one
+            if which_measure_scheme + 1 < len(measure_schemes):
+                which_measure_scheme += 1
+        return measure_break_points, beat_break_points
+
+    @staticmethod
+    def raw_voice_to_pretty_looking_voice(pc_voice, measure_break_points, beat_break_points):
+        for pc_note in pc_voice:
+            print pc_note, pc_note.start_time_divisor, pc_note.end_time_divisor
+        pc_voice = Playcorder._break_into_ties(pc_voice, beat_break_points)
+        for pc_note in pc_voice:
+            print pc_note, pc_note.start_time_divisor, pc_note.end_time_divisor
+
+    @staticmethod
+    def _break_into_ties(recording_in_seconds, beat_break_points):
+        # first, create an array of beat lengths that repeats the length of
+        # the last beat_scheme until we reach the end of the voice
+
+        for beat_start_time in beat_break_points:
+            for i in range(len(recording_in_seconds)):
+                this_pc_note = recording_in_seconds[i]
+                if this_pc_note.start_time < beat_start_time < this_pc_note.start_time + this_pc_note.length:
+                    # split it in two
+                    first_half_tie = "continue" if this_pc_note.tie is "stop" or this_pc_note.tie is "continue" else "start"
+                    second_half_tie = "continue" if this_pc_note.tie is "start" or this_pc_note.tie is "continue" else "stop"
+                    first_half = PCNote(this_pc_note.start_time, beat_start_time - this_pc_note.start_time,
+                                        this_pc_note.pitch, this_pc_note.volume, this_pc_note.variant, first_half_tie)
+                    if first_half_tie == "start":
+                        first_half.start_time_divisor = this_pc_note.start_time_divisor
+                    second_half = PCNote(beat_start_time, this_pc_note.start_time + this_pc_note.length - beat_start_time,
+                                         this_pc_note.pitch, this_pc_note.volume, this_pc_note.variant, second_half_tie)
+                    if second_half_tie == "stop":
+                        second_half.end_time_divisor = this_pc_note.end_time_divisor
+                    recording_in_seconds[i] = [first_half, second_half]
+            recording_in_seconds = utilities.make_flat_list(recording_in_seconds, indivisible_type=PCNote)
+
+        return recording_in_seconds
+
+    @staticmethod
+    def _add_rests(recording_in_seconds, beat_schemes):
+        new_recording = list(recording_in_seconds)
+        # first, create all the intervals representing
+        beat_intervals = []
+        recording_end_time = max([pc_note.start_time+pc_note.length for pc_note in recording_in_seconds])
+        which_beat = 0
+        beat_start = 0
+        beat_length = beat_schemes[which_beat].beat_length
+        while beat_start + beat_length < recording_end_time:
+            beat_intervals.append(IntervalSet.between(beat_start, beat_start + beat_length))
+            if which_beat + 1 < len(beat_schemes):
+                which_beat += 1
+            beat_start += beat_length
+            beat_length = beat_schemes[which_beat].beat_length
+        # add in rests to fill out each beat
+        for pc_note in recording_in_seconds:
+            note_interval = IntervalSet.between(pc_note.start_time, pc_note.start_time + pc_note.length)
+            for i in range(len(beat_intervals)):
+                beat_intervals[i] -= note_interval
+
+        for beat_interval in beat_intervals:
+            for rest_range in beat_interval:
+                new_recording.append(PCNote(start_time=rest_range.lower_bound,
+                                            length=rest_range.upper_bound-rest_range.lower_bound,
+                                            pitch=None, volume=None, variant=None, tie=None))
+        new_recording.sort(key=lambda x: x.start_time)
+        return new_recording
+
+    @staticmethod
+    def _combine_tied_quarters_and_longer(recording_in_seconds, measure_schemes):
+        # _break_into_ties has broken some long notes into tied quarters, which is ugly and unnecessary
+        # so we'll recombine them
+        pass
+
+    # [ ------- music21 voice processing ------- ]
+
+    @staticmethod
+    def _m21voice_from_pc_voice(voice):
+        m21_voice = Voice()
+        for pc_note in voice:
+            assert isinstance(pc_note, PCNote)
+            if pc_note.pitch is None:
+                # it's a rest
+                the_note = Rest(quarterLength=pc_note.length)
+            else:
+                # it's note or chord
+                if hasattr(pc_note.pitch, "__len__"):
+                    the_note = Chord([Note(Pitch(p), quarterLength=pc_note.length) for p in pc_note.pitch])
+                else:
+                    the_note = Note(Pitch(pc_note.pitch), quarterLength=pc_note.length)
+                if pc_note.tie is not None:
+                    the_note.tie = Tie(pc_note.tie)
+            m21_voice.insert(pc_note.start_time, the_note)
+        return m21_voice
+
+    @staticmethod
+    def shuffle_m21_durations_to_big_beats(m21voice, beat_lengths_list):
+        pass
+
+    # ---------------------------------------- SAVING TO MIDI ----------------------------------------------
 
     def save_to_midi_file(self, path, tempo=60, max_overlap=0.01):
         parts = [Playcorder._separate_into_non_overlapping_voices(part.recording, max_overlap) for part in self.parts_recorded]
@@ -444,6 +703,7 @@ class PlaycorderInstrument:
         self.host_playcorder = host_playcorder
         self.name = name
         self.notes_started = []   # each entry goes (note_id, pitch, volume, start_time, variant_dictionary)
+        self.render_info = {}
 
     # ------------------ Methods to be overridden by subclasses ------------------
 
@@ -563,48 +823,76 @@ class MidiPlaycorderInstrument(PlaycorderInstrument):
         pitch_bend_val = min(max(pitch_bend_val, -8192), 8191)
         self.synth.pitch_bend(channel, pitch_bend_val)
 
+#
+# voice = [PCNote(0, 0.16666666, None, None, None, None),
+#          PCNote(0.16666666, 0.6666666, 64, 1.0, None, None),
+#          PCNote(0.833333333333, 0.16666666, None, None, None, None)]
+#
+# m21voice = Playcorder._m21voice_from_pc_voice(voice)
+# from music21 import duration
+# # m21voice[0].duration.components = reversed(m21voice[0].duration.components)
+#
+#
+# m21voice[1].duration.tuplets = (duration.Tuplet(6, 4, "eighth"),)
+#
+# print duration.Tuplet(6, 4, 0.5).tupletNormal
+#
+# exit()
 
 # -------------- EXAMPLE --------------
-# pc = Playcorder(soundfont_path="default")
-# piano = pc.add_midi_part(0)
+# just do the midi quantization for now!!!
+pc = Playcorder(soundfont_path="default")
+piano = pc.add_midi_part(0)
 
-# pc.start_recording([piano])
-# n = piano.start_note(68, 0.5)
-# time.sleep(1)
-# piano.change_note_pitch(n, 70)
-# time.sleep(1)
-# piano.end_note(n)
-# piano.play_note(72, 0.5, 1.5)
-# time.sleep(1.5)
-# piano.play_note(70, 0.5, 2)
-# time.sleep(2.5)
-# pc.stop_recording()
+pc.start_recording([piano])
+import random
+for i in range(15):
+    l = random.random()*1.0+0.2
+    piano.play_note(random.randrange(50, 70), 0.5, l)
+    time.sleep(random.random()*2.0)
 
-# pc.save_to_xml_file(name="bob.xml")
 
-#
-# voice = utilities.load_object("rec.pk")
-voice = [PCNote(start_time=0.0, length=0.2, pitch=64, volume=0.5, variant=None),
-         PCNote(start_time=0.25, length=0.2, pitch=64, volume=0.5, variant=None),
-         PCNote(start_time=0.25, length=0.2, pitch=67, volume=0.5, variant=None),
-         PCNote(start_time=0.25, length=0.2, pitch=72, volume=0.5, variant=None),
-         PCNote(start_time=1.1, length=0.2, pitch=64, volume=0.5, variant=None),
-         PCNote(start_time=1.1, length=0.7, pitch=64, volume=0.5, variant=None),
-         PCNote(start_time=1.4, length=0.4, pitch=64, volume=0.5, variant=None),
-         PCNote(start_time=1.8, length=0.2, pitch=64, volume=0.5, variant=None)]
-# print BeatQuantizationScheme(60, 1.0, max_indigestibility=7, simplicity_preference=3).quantization_divisions
-# print voice
-# print "Start"
-# Playcorder._collapse_recording_chords(voice)
+# # n = piano.start_note(68, 0.5)
+# # time.sleep(1)
+# # piano.change_note_pitch(n, 70)
+# # time.sleep(1)
+# # piano.end_note(n)
+# # piano.play_note(72, 0.5, 1.5)
+# # time.sleep(1.5)
+# # piano.play_note(70, 0.5, 2)
+# # time.sleep(2.5)
+
+
+pc.stop_recording()
+pc.save_to_xml_file(name="bob.xml", measure_schemes=[MeasureScheme.from_time_signature("3/4", 60, max_divisions=6), MeasureScheme.from_time_signature("2/4", 200, max_divisions=6)])
+
+
+# # voice = utilities.load_object("rec.pk")
+# voice = [PCNote(start_time=0.0, length=0.2, pitch=64, volume=0.5, variant=None),
+#          PCNote(start_time=0.25, length=0.7, pitch=64, volume=0.5, variant=None),
+#          PCNote(start_time=0.25, length=0.7, pitch=67, volume=0.5, variant=None),
+#          PCNote(start_time=0.25, length=0.7, pitch=72, volume=0.5, variant=None),
+#          PCNote(start_time=1.1, length=1.3, pitch=64, volume=0.5, variant=None),
+#          PCNote(start_time=1.1, length=1.4, pitch=68, volume=0.5, variant=None),
+#          PCNote(start_time=2.5, length=0.5, pitch=64, volume=0.5, variant=None),
+#          PCNote(start_time=2.5, length=0.4, pitch=66, volume=0.5, variant=None)]
+# # print BeatQuantizationScheme(60, 1.0, max_indigestibility=7, simplicity_preference=3).quantization_divisions
+# # print voice
+# # print "Start"
+# print Playcorder._collapse_recording_chords(
+#     Playcorder._quantize_recording(voice, [BeatQuantizationScheme(60, 1.0), BeatQuantizationScheme(120, 1.0)])
+# )
+
 # print "Stop"
 # print "------------------------"
 
 # LOOK INTO WHAT'S UP HERE: Seems like we need to be a little careful if start and end time are rounded to the start
 # of the next beat. Should it disappear? Should it turn into a grace note?
-print Playcorder._separate_into_non_overlapping_voices(
-    Playcorder._collapse_recording_chords(
-        Playcorder._quantize_recording(voice,
-            [BeatQuantizationScheme(60, 1.0, max_indigestibility=7, simplicity_preference=0.1)]
-        )
-    ), 0.001
-)
+
+# print Playcorder._separate_into_non_overlapping_voices(
+#     Playcorder._collapse_recording_chords(
+#         Playcorder._quantize_recording(voice,
+#             [BeatQuantizationScheme(60, 1.0, max_indigestibility=7, simplicity_preference=0.1)]
+#         )
+#     ), 0.001
+# )
