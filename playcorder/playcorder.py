@@ -5,12 +5,15 @@ from xml.etree.ElementTree import ElementTree
 from fractions import Fraction
 
 from music21 import musicxml
-from music21.stream import Voice, Part, Score
+from music21.stream import Voice, Part, Score, Measure
 from music21 import instrument
 from music21.note import Note, Rest
 from music21.chord import Chord
 from music21.pitch import Pitch
+from music21.duration import Duration, Tuplet, TupletFixer
+from music21.clef import TrebleClef
 from music21.tie import Tie
+from music21.key import KeySignature
 from music21.tempo import MetronomeMark
 from music21.meter import TimeSignature
 from music21.exceptions21 import InstrumentException
@@ -23,18 +26,6 @@ from MidiFile import MIDIFile
 from marcpy.usefulimports.interval import IntervalSet
 
 
-# from music21 import corpus
-# sBach = corpus.parse('bach/bwv57.8')
-# sBach.show("text")
-# exit()
-# sop = sBach[1]
-# assert isinstance(sop, Part)
-# inst = sop[0]
-# # print instrument.fromString("Violin")
-# assert isinstance(inst, instrument.Instrument)
-# exit()
-
-
 class PCNote:
     def __init__(self, start_time, length, pitch, volume, variant=None, tie=None):
         self.start_time = start_time
@@ -43,8 +34,6 @@ class PCNote:
         self.volume = volume
         self.variant = variant
         self.tie = tie
-        self.start_time_divisor = None
-        self.end_time_divisor = None
 
     def __repr__(self):
         return "PCNote(start_time={}, length={}, pitch={}, volume={}, variant={}, tie={})".format(
@@ -341,31 +330,24 @@ class Playcorder:
                          max_indigestibility=4, simplicity_preference=0.2):
 
         print "Saving Output..."
+        # get measure schemes from time signature if not supplied
         if measure_schemes is None:
             measure_schemes = [MeasureScheme.from_time_signature(time_signature, tempo, max_divisions=max_divisions,
                                                                  max_indigestibility=max_indigestibility,
                                                                  simplicity_preference=simplicity_preference)]
+        # derive beat schemes from measure schemes
         beat_schemes = []
         for ms in measure_schemes:
             beat_schemes.extend(ms.beat_quantization_schemes)
 
-        measure_break_points, beat_break_points = Playcorder.get_measure_and_beat_break_points(measure_schemes, 30)
+        total_quarters_length = Playcorder._get_recording_quarters_length(self.parts_recorded, beat_schemes)
+
+        measure_break_points, beat_break_points = \
+            Playcorder.get_measure_and_beat_break_points(measure_schemes, total_quarters_length)
 
         m21_score = Score()
         for i, part in enumerate(self.parts_recorded):
             print "Working on Part " + str(i+1) + "..."
-
-            # quantize the part, merge notes into chords, and separate it into non-overlapping voices
-            quantized_separated_voices = Playcorder._separate_into_non_overlapping_voices(
-                Playcorder._collapse_recording_chords(
-                    Playcorder._quantize_recording(part.recording, beat_schemes)
-                ), 0.001
-            )
-
-            for voice in quantized_separated_voices:
-                voice = Playcorder.raw_voice_to_pretty_looking_voice(voice ,measure_break_points, beat_break_points)
-
-            exit()
 
             # make the music21 part object, and add the instrument
             m21_part = Part(id=part.name)
@@ -374,23 +356,68 @@ class Playcorder:
             except InstrumentException:
                 m21_part.append(instrument.Piano())
 
-            for voice in voices:
-                voice = Playcorder._break_into_ties(voice, beat_schemes)
-                voice = Playcorder._add_rests(voice, beat_schemes)
-                # print voice
-                # print Playcorder._m21voice_from_pc_voice(voice)
-                m21_part.insert(0, Playcorder._m21voice_from_pc_voice(voice))
+            # quantize the recording, also noting the beat divisors
+            quantized_recording, beat_divisors = Playcorder._quantize_recording(part.recording, beat_schemes)
+            # merge notes into chords
+            quantized_recording = Playcorder._collapse_recording_chords(quantized_recording)
+            # separate it into non-overlapping voices
+            quantized_separated_voices = Playcorder._separate_into_non_overlapping_voices(quantized_recording, 0.001)
+            # clean up pc_voices: add rests, break into ties, etc.
+            clean_pc_voices = [Playcorder._raw_voice_to_pretty_looking_voice(v, measure_break_points, beat_break_points)
+                               for v in quantized_separated_voices]
+
+            # create music21 measure objects with time signatures and add to the part
+            last_time_signature = None
+            measure_num = 1
+            for measure_break_point, measure_time_signature in measure_break_points[:-1]:
+                # make a music21 measure with the appropriate time signature; place the notes from the voices in it
+                this_measure = Measure(number=measure_num)
+                if measure_num == 1:
+                    this_measure.insert(0, TrebleClef())
+                    this_measure.insert(0, KeySignature(sharps=0))
+                if measure_time_signature != last_time_signature:
+                    this_measure.timeSignature = TimeSignature(measure_time_signature)
+                last_time_signature = measure_time_signature
+                m21_part.insert(measure_break_point, this_measure)
+                measure_num += 1
+
+            # make music 21 notes and rests, and add them to the measures
+            for m21_measure in m21_part:
+                if not isinstance(m21_measure, Measure):
+                    continue
+                measure_start = m21_measure.offset
+                measure_end = m21_measure.offset + m21_measure.barDuration.quarterLength
+
+                # first group notes into the voices in the measure
+                voices_in_measure = []
+                for voice in clean_pc_voices:
+                    voice_in_measure = [pc_note for pc_note in voice
+                                        if measure_start <= pc_note.start_time < measure_end]
+                    # make sure one of them is not a rest
+                    if len([n for n in voice_in_measure if n.pitch is not None]) > 0:
+                        voices_in_measure.append(voice_in_measure)
+
+                # populate the music21 measure object with music21 notes (or voices containing notes)
+                if len(voices_in_measure) == 0:
+                    # if the measure's empty, add a bar rest
+                    m21_measure.insert(0, Rest(duration=m21_measure.barDuration))
+                elif len(voices_in_measure) == 1:
+                    # only one voice, so just add notes directly into measure
+                    for pc_note in voices_in_measure[0]:
+                        m21_measure.insert(pc_note.start_time - measure_start, Playcorder._pc_note_to_m21_note(pc_note))
+                else:
+                    # multiple voices
+                    for voice_in_measure in voices_in_measure:
+                        m21_voice = Voice()
+                        for pc_note in voice_in_measure:
+                            m21_voice.insert(pc_note.start_time - measure_start,
+                                             Playcorder._pc_note_to_m21_note(pc_note))
+                        m21_measure.insert(0, m21_voice)
+
+            Playcorder._set_tuplets_for_m21_notes(list(m21_part.flat.notesAndRests), beat_break_points, beat_divisors)
             m21_score.insert(0, m21_part)
 
-        # add in the time signatures
-        current_beat = 0
-        current_time_signature = None
-        for measure_scheme in measure_schemes:
-            if measure_scheme.string_time_signature != current_time_signature:
-                m21_score.insert(current_beat, TimeSignature(measure_scheme.string_time_signature))
-                current_time_signature = measure_scheme.string_time_signature
-            current_beat += measure_scheme.measure_length
-
+        # add in the tempo
         current_beat = 0
         current_tempo = None
         for beat_scheme in beat_schemes:
@@ -400,10 +427,70 @@ class Playcorder:
                 current_tempo = beat_scheme.tempo
             current_beat += beat_scheme.beat_length
 
+        m21_score.show("text")
+
+        # utilities.save_object(m21_score, "lastm21score.pk")
+        Playcorder.save_m21_to_xml(m21_score, name)
+
+    # [ ---------- Utilities -----------]
+
+    @staticmethod
+    def _get_recording_quarters_length(recorded_parts, beat_schemes):
+        # returns the length in seconds, and then the length in quarters, taking into account the tempos of the beats
+        length = max([max([pc_note.start_time + pc_note.length for pc_note in part.recording])
+                      for part in recorded_parts])
+        quarter_length = 0
+        current_beat = 0
+        while length > 0:
+            current_beat_scheme = beat_schemes[current_beat]
+            assert isinstance(current_beat_scheme, BeatQuantizationScheme)
+            beat_length_in_seconds = current_beat_scheme.beat_length * 60.0 / current_beat_scheme.tempo
+            quarter_length += current_beat_scheme.beat_length
+            length -= beat_length_in_seconds
+            if current_beat + 1 < len(beat_schemes):
+                current_beat += 1
+        return quarter_length
+
+    @staticmethod
+    def get_measure_and_beat_break_points(measure_schemes, total_length):
+        # returns a list of break points; handy for splitting notes into tied components
+        # measure break points are coupled with time signatures
+        measure_break_points = []
+        beat_break_points = []
+
+        which_measure_scheme = 0
+        current_measure_start_time = 0.0
+        while current_measure_start_time < total_length:
+            current_measure_scheme = measure_schemes[which_measure_scheme]
+            assert isinstance(current_measure_scheme, MeasureScheme)
+            # add the measure break points
+            measure_break_points.append((current_measure_start_time, current_measure_scheme.string_time_signature))
+            # add the beat break points
+            beat_start_displacement = 0.0
+            for beat_scheme in current_measure_scheme.beat_quantization_schemes:
+                assert isinstance(beat_scheme, BeatQuantizationScheme)
+                beat_break_points.append(current_measure_start_time + beat_start_displacement)
+                beat_start_displacement += beat_scheme.beat_length
+
+            # move to the next measure
+            current_measure_start_time += current_measure_scheme.measure_length
+            # move to the next measure scheme, if there is another, otherwise keep repeating the last one
+            if which_measure_scheme + 1 < len(measure_schemes):
+                which_measure_scheme += 1
+
+        # add in the end of the last measure
+        measure_break_points.append((current_measure_start_time,
+                                     measure_schemes[which_measure_scheme].string_time_signature))
+        beat_break_points.append(current_measure_start_time)
+
+        return measure_break_points, beat_break_points
+
+    @staticmethod
+    def save_m21_to_xml(m21_object, file_name):
         gex = musicxml.m21ToXml.GeneralObjectExporter()
-        sx = musicxml.m21ToXml.ScoreExporter(gex.fromGeneralObject(m21_score))
+        sx = musicxml.m21ToXml.ScoreExporter(gex.fromGeneralObject(m21_object))
         mx_score = sx.parse()
-        ElementTree(mx_score).write(name)
+        ElementTree(mx_score).write(file_name)
 
     # [ ------- Part Processing ------- ]
 
@@ -429,6 +516,7 @@ class Playcorder:
         current_beat_scheme = 0
         quarters_beat_start_time = 0.0
         seconds_beat_start_time = 0.0
+        beat_divisors = []
         while len(raw_onsets) + len(raw_terminations) > 0:
             # move forward one beat at a time
             # get the beat scheme for this beat
@@ -496,6 +584,8 @@ class Playcorder:
                 # save this info for later, when we need to assure they all have the same Tuplet
                 pc_note.end_time_divisor = best_divisor
 
+            beat_divisors.append(best_divisor)
+
             quarters_beat_start_time += quarters_beat_length
             seconds_beat_start_time += seconds_beat_length
 
@@ -504,10 +594,8 @@ class Playcorder:
             quantized_recording.append(PCNote(start_time=pc_note_to_quantize_start_time[pc_note],
                                        length=pc_note_to_quantize_end_time[pc_note] - pc_note_to_quantize_start_time[pc_note],
                                        pitch=pc_note.pitch, volume=pc_note.volume, variant=pc_note.variant, tie=pc_note.tie))
-            quantized_recording[-1].start_time_divisor = pc_note.start_time_divisor
-            quantized_recording[-1].end_time_divisor = pc_note.end_time_divisor
 
-        return quantized_recording
+        return quantized_recording, beat_divisors
 
     @staticmethod
     def _collapse_recording_chords(recording):
@@ -550,39 +638,10 @@ class Playcorder:
     # [ ------- Voice Pre-Processing ------- ]
 
     @staticmethod
-    def get_measure_and_beat_break_points(measure_schemes, total_length):
-        # returns a list of break points; handy for splitting notes into tied components
-        measure_break_points = []
-        beat_break_points = []
-
-        which_measure_scheme = 0
-        current_measure_start_time = 0.0
-        while current_measure_start_time < total_length:
-            current_measure_scheme = measure_schemes[which_measure_scheme]
-            assert isinstance(current_measure_scheme, MeasureScheme)
-            # add the measure break points
-            measure_break_points.append(current_measure_start_time)
-            # add the beat break points
-            beat_start_displacement = 0.0
-            for beat_scheme in current_measure_scheme.beat_quantization_schemes:
-                assert isinstance(beat_scheme, BeatQuantizationScheme)
-                beat_break_points.append(current_measure_start_time + beat_start_displacement)
-                beat_start_displacement += beat_scheme.beat_length
-
-            # move to the next measure
-            current_measure_start_time += current_measure_scheme.measure_length
-            # move to the next measure scheme, if there is another, otherwise keep repeating the last one
-            if which_measure_scheme + 1 < len(measure_schemes):
-                which_measure_scheme += 1
-        return measure_break_points, beat_break_points
-
-    @staticmethod
-    def raw_voice_to_pretty_looking_voice(pc_voice, measure_break_points, beat_break_points):
-        for pc_note in pc_voice:
-            print pc_note, pc_note.start_time_divisor, pc_note.end_time_divisor
+    def _raw_voice_to_pretty_looking_voice(pc_voice, measure_break_points, beat_break_points):
+        pc_voice = Playcorder._add_rests(pc_voice, beat_break_points)
         pc_voice = Playcorder._break_into_ties(pc_voice, beat_break_points)
-        for pc_note in pc_voice:
-            print pc_note, pc_note.start_time_divisor, pc_note.end_time_divisor
+        return pc_voice
 
     @staticmethod
     def _break_into_ties(recording_in_seconds, beat_break_points):
@@ -598,38 +657,27 @@ class Playcorder:
                     second_half_tie = "continue" if this_pc_note.tie is "start" or this_pc_note.tie is "continue" else "stop"
                     first_half = PCNote(this_pc_note.start_time, beat_start_time - this_pc_note.start_time,
                                         this_pc_note.pitch, this_pc_note.volume, this_pc_note.variant, first_half_tie)
-                    if first_half_tie == "start":
-                        first_half.start_time_divisor = this_pc_note.start_time_divisor
                     second_half = PCNote(beat_start_time, this_pc_note.start_time + this_pc_note.length - beat_start_time,
                                          this_pc_note.pitch, this_pc_note.volume, this_pc_note.variant, second_half_tie)
-                    if second_half_tie == "stop":
-                        second_half.end_time_divisor = this_pc_note.end_time_divisor
                     recording_in_seconds[i] = [first_half, second_half]
             recording_in_seconds = utilities.make_flat_list(recording_in_seconds, indivisible_type=PCNote)
 
         return recording_in_seconds
 
     @staticmethod
-    def _add_rests(recording_in_seconds, beat_schemes):
+    def _add_rests(recording_in_seconds, beat_break_points):
         new_recording = list(recording_in_seconds)
-        # first, create all the intervals representing
-        beat_intervals = []
-        recording_end_time = max([pc_note.start_time+pc_note.length for pc_note in recording_in_seconds])
-        which_beat = 0
-        beat_start = 0
-        beat_length = beat_schemes[which_beat].beat_length
-        while beat_start + beat_length < recording_end_time:
-            beat_intervals.append(IntervalSet.between(beat_start, beat_start + beat_length))
-            if which_beat + 1 < len(beat_schemes):
-                which_beat += 1
-            beat_start += beat_length
-            beat_length = beat_schemes[which_beat].beat_length
-        # add in rests to fill out each beat
+        # first, create all the intervals representing the beats
+        beat_intervals = [IntervalSet.between(beat_break_points[i], beat_break_points[i+1])
+                          for i in range(len(beat_break_points) - 1)]
+
+        # subtract out all the time occupied by a note already
         for pc_note in recording_in_seconds:
             note_interval = IntervalSet.between(pc_note.start_time, pc_note.start_time + pc_note.length)
             for i in range(len(beat_intervals)):
                 beat_intervals[i] -= note_interval
 
+        # add in rests to fill out each beat
         for beat_interval in beat_intervals:
             for rest_range in beat_interval:
                 new_recording.append(PCNote(start_time=rest_range.lower_bound,
@@ -642,31 +690,64 @@ class Playcorder:
     def _combine_tied_quarters_and_longer(recording_in_seconds, measure_schemes):
         # _break_into_ties has broken some long notes into tied quarters, which is ugly and unnecessary
         # so we'll recombine them
-        pass
+        return recording_in_seconds
 
     # [ ------- music21 voice processing ------- ]
 
     @staticmethod
-    def _m21voice_from_pc_voice(voice):
-        m21_voice = Voice()
-        for pc_note in voice:
-            assert isinstance(pc_note, PCNote)
-            if pc_note.pitch is None:
-                # it's a rest
-                the_note = Rest(quarterLength=pc_note.length)
+    def _pc_note_to_m21_note(pc_note):
+        assert isinstance(pc_note, PCNote)
+        if pc_note.pitch is None:
+            # it's a rest
+            the_note = Rest(quarterLength=pc_note.length)
+        else:
+            # it's note or chord
+            if hasattr(pc_note.pitch, "__len__"):
+                the_note = Chord([Note(Pitch(p), quarterLength=pc_note.length) for p in pc_note.pitch])
             else:
-                # it's note or chord
-                if hasattr(pc_note.pitch, "__len__"):
-                    the_note = Chord([Note(Pitch(p), quarterLength=pc_note.length) for p in pc_note.pitch])
-                else:
-                    the_note = Note(Pitch(pc_note.pitch), quarterLength=pc_note.length)
-                if pc_note.tie is not None:
-                    the_note.tie = Tie(pc_note.tie)
-            m21_voice.insert(pc_note.start_time, the_note)
-        return m21_voice
+                the_note = Note(Pitch(pc_note.pitch), quarterLength=pc_note.length)
+            if pc_note.tie is not None:
+                the_note.tie = Tie(pc_note.tie)
+
+        # divisor = pc_note.start_time_divisor if pc_note.start_time_divisor is not None else pc_note.end_time_divisor
+        # if divisor is not None and not utilities.is_x_pow_of_y(divisor, 2):
+        #     utilities.floor_x_to_pow_of_y(divisor, 2)
+        #     the_note.duration.tuplets = (Tuplet(6, 4, ),)
+
+        return the_note
 
     @staticmethod
-    def shuffle_m21_durations_to_big_beats(m21voice, beat_lengths_list):
+    def _get_tuplet_type(beat_length, beat_div):
+        # preference is to express the
+        beat_length_fraction = Fraction(beat_length).limit_denominator()
+        normal_number = beat_length_fraction.numerator
+        # if denominator is 1, normal type is quarter note, 2 -> eighth note, etc.
+        normal_type = 4 * beat_length_fraction.denominator
+        while normal_number * 2 <= beat_div:
+            normal_number *= 2
+            normal_type *= 2
+
+        # now we have beat_div in the space of normal_number normal_type-th notes
+        if normal_number == beat_div:
+            return None
+        else:
+            return Tuplet(beat_div, normal_type, Duration(4.0/normal_type))
+
+    @staticmethod
+    def _set_tuplets_for_m21_notes(notes_and_rests, beat_break_points, beat_divisors):
+        # we assume notes_and_rests is in order
+        notes_and_rests = list(notes_and_rests)
+        for beat_start, beat_end, beat_div in zip(beat_break_points[:-1], beat_break_points[1:], beat_divisors):
+            beat_length = beat_end - beat_start
+            tuplet_type = Playcorder._get_tuplet_type(beat_length, beat_div)
+            if tuplet_type is not None:
+                while len(notes_and_rests) > 0 and notes_and_rests[0].offset < beat_end:
+                    this_note = notes_and_rests.pop(0)
+                    # this_note.duration.dont_mess_with_my_fucking_tuplets = True
+                    this_note.duration.tuplets = (tuplet_type,)
+
+    @staticmethod
+    def _shuffle_m21_durations_to_big_beats(m21voice, beat_lengths_list):
         pass
 
     # ---------------------------------------- SAVING TO MIDI ----------------------------------------------
@@ -824,32 +905,41 @@ class MidiPlaycorderInstrument(PlaycorderInstrument):
         self.synth.pitch_bend(channel, pitch_bend_val)
 
 #
-# voice = [PCNote(0, 0.16666666, None, None, None, None),
-#          PCNote(0.16666666, 0.6666666, 64, 1.0, None, None),
-#          PCNote(0.833333333333, 0.16666666, None, None, None, None)]
-#
-# m21voice = Playcorder._m21voice_from_pc_voice(voice)
-# from music21 import duration
-# # m21voice[0].duration.components = reversed(m21voice[0].duration.components)
-#
-#
-# m21voice[1].duration.tuplets = (duration.Tuplet(6, 4, "eighth"),)
-#
-# print duration.Tuplet(6, 4, 0.5).tupletNormal
-#
+# from music21 import corpus
+# sBach = corpus.parse('bach/bwv57.8')
+# Playcorder.save_m21_to_xml(sBach, "bob.xml")
+# sBach.show("text")
 # exit()
 
+# m21_measure = Measure()
+# m21_measure.append(TimeSignature("3/4"))
+# n = Note(midi=63, quarterLength=0.1666666666)
+# n.duration.dont_mess_with_my_fucking_tuplets = True
+# n.duration._tuplets = (Tuplet(6, 4),)
+# m21_measure.append(n)
+# n = Note(midi=67, quarterLength=0.6666666666)
+# n.duration.dont_mess_with_my_fucking_tuplets = True
+# n.duration.tuplets = (Tuplet(6, 4),)
+# m21_measure.append(n)
+# n = Note(midi=62, quarterLength=0.1666666666)
+# n.duration.dont_mess_with_my_fucking_tuplets = True
+# n.duration.tuplets = (Tuplet(6, 4),)
+# m21_measure.append(n)
+# m21_measure.append(Note(midi=61, quarterLength=2))
+# Playcorder.save_m21_to_xml(m21_measure, "bob.xml")
+# exit()
 # -------------- EXAMPLE --------------
-# just do the midi quantization for now!!!
-pc = Playcorder(soundfont_path="default")
-piano = pc.add_midi_part(0)
 
-pc.start_recording([piano])
-import random
-for i in range(15):
-    l = random.random()*1.0+0.2
-    piano.play_note(random.randrange(50, 70), 0.5, l)
-    time.sleep(random.random()*2.0)
+# just do the midi quantization for now!!!
+# pc = Playcorder(soundfont_path="default")
+# piano = pc.add_midi_part(0)
+#
+# pc.start_recording([piano])
+# import random
+# for i in range(15):
+#     l = random.random()*0.5+0.1
+#     piano.play_note(random.randrange(50, 70), 0.5, l)
+#     time.sleep(l + random.random()*0.5)
 
 
 # # n = piano.start_note(68, 0.5)
@@ -863,8 +953,10 @@ for i in range(15):
 # # time.sleep(2.5)
 
 
-pc.stop_recording()
-pc.save_to_xml_file(name="bob.xml", measure_schemes=[MeasureScheme.from_time_signature("3/4", 60, max_divisions=6), MeasureScheme.from_time_signature("2/4", 200, max_divisions=6)])
+# pc.stop_recording()
+# pc.save_to_xml_file(name="bob.xml", measure_schemes=[MeasureScheme.from_time_signature("3/4", 120, max_divisions=6),
+#                                                      MeasureScheme.from_time_signature("9/8", 120, max_divisions=6),
+#                                                      MeasureScheme.from_time_signature("2/4", 400, max_divisions=6)])
 
 
 # # voice = utilities.load_object("rec.pk")

@@ -7,7 +7,7 @@ import inspect
 import math
 import numpy as np
 import bisect
-
+import copy
 
 def enum(**named_values):
     return type('Enum', (), named_values)
@@ -45,7 +45,7 @@ def get_relative_file_path(file_name):
 
 def save_object(obj, filename):
     with open(filename, 'wb') as output:
-        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(copy.deepcopy(obj), output, pickle.HIGHEST_PROTOCOL)
 
 
 def load_object(filename):
@@ -87,6 +87,7 @@ def get_pitch_description(pitch, accidental_type="standard"):
             pc_name = pc_name.split("/")[0]
 
     return pc_name + str(octave)
+
 
 def get_pitch_class_description(pitch_class, accidental_type="standard"):
     pc_name = pc_number_to_name[pitch_class]
@@ -218,8 +219,9 @@ def make_flat_list(l, indivisible_type=None):
     new_list = list(l)
     i = 0
     while i < len(new_list):
-        if hasattr(new_list[i], "__len__") and not isinstance(new_list[i], indivisible_type):
-            new_list = new_list[:i] + new_list[i] + new_list[i+1:]
+        if hasattr(new_list[i], "__len__"):
+            if indivisible_type is None or not isinstance(new_list[i], indivisible_type):
+                new_list = new_list[:i] + new_list[i] + new_list[i+1:]
         else:
             i += 1
     return new_list
