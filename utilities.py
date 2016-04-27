@@ -140,12 +140,11 @@ def is_x_pow_of_y(x, y):
 
 def floor_x_to_pow_of_y(x, y):
     a = math.log(x, y)
-    return y ** int(a)
+    return y ** math.floor(a)
 
 
 def round_x_to_pow_of_y(x, y):
     a = math.log(x, y)
-
     return y ** (int(round(a)) if isinstance(y, int) else round(a))
 
 

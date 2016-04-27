@@ -4,6 +4,8 @@ __author__ = 'mpevans'
 import xml.etree.ElementTree as ET
 import math
 from datetime import date
+import numbers
+import random
 
 #  -------------------------------------------------- GLOBALS ----------------------------------------------------- #
 
@@ -97,7 +99,9 @@ class Duration:
                 self.dots += 1
                 dots_multiplier = (2.0 ** (self.dots + 1) - 1) / 2.0 ** self.dots
                 if self.dots > max_dots_allowed:
-                    raise ValueError("Duration does not resolve to single note type.")
+                    raise ValueError("Duration length of {} does not resolve to "
+                                     "single note type.".format(length_without_tuplet))
+
             self.type = length_to_note_type[length_without_tuplet / dots_multiplier]
         if tuplet is not None:
             self.time_modification = ET.Element("time-modification")
@@ -116,7 +120,11 @@ class Duration:
 
 class Tuplet(ET.Element):
     def __init__(self, start_or_end, number=1, placement="above"):
+        self.start_or_end = start_or_end
         super(Tuplet, self).__init__("tuplet", {"type": start_or_end, "number": str(number), "placement": placement})
+
+    def __repr__(self):
+        return "Tuplet({})".format(self.start_or_end)
 
 
 #  ---------------------------------------------------- NOTE ------------------------------------------------------- #
@@ -166,10 +174,10 @@ class Note(ET.Element):
             self.append(voice_el)
 
         if ties is not None:
-            if ties.lower() == "start" or ties.lower() == "thru":
+            if ties.lower() == "start" or ties.lower() == "continue":
                 self.append(ET.Element("tie", {"type": "start"}))
                 notations.append(ET.Element("tied", {"type": "start"}))
-            if ties.lower() == "stop" or ties.lower() == "thru":
+            if ties.lower() == "stop" or ties.lower() == "continue":
                 self.append(ET.Element("tie", {"type": "stop"}))
                 notations.append(ET.Element("tied", {"type": "stop"}))
 
@@ -314,10 +322,16 @@ class Part(ET.Element):
 #  ------------------------------------------------- Score ------------------------------------------------------ #
 
 
+fake_composers = ["D. Drumpf", "50 Cent", "Eric Whitacre", "J. Bieber", "Honey Boo Boo", "Rebecca Black"]
+fake_titles = ["My First Orgasm", "Album Twig", "Sonata No.5, Op. 27", "Things that Go Boom", "My Deepest Feelings"]
+
+
 class Score(ET.Element):
 
-    def __init__(self, title, composer):
+    def __init__(self, title=None, composer=None):
         super(Score, self).__init__("score-partwise")
+        title = random.choice(fake_titles) if title is None else title
+        composer = random.choice(fake_composers) if composer is None else composer
         str(date.today())
         work_el = ET.Element("work")
         self.append(work_el)
@@ -347,6 +361,33 @@ class Score(ET.Element):
         file_.write(ET.tostring(self))
         file_.close()
 
+#  ----------------------------------------------- Other Elements --------------------------------------------------- #
+
+
+class MetronomeMark(ET.Element):
+
+    def __init__(self, unit_type, bpm, voice=1, staff=1):
+        super(MetronomeMark, self).__init__("direction")
+        d_type_el = ET.Element("direction-type")
+        self.append(d_type_el)
+
+        metronome_el = ET.SubElement(d_type_el, "metronome")
+        if isinstance(unit_type, numbers.Number):
+            if float(unit_type) not in length_to_note_type:
+                raise ValueError("Unit type not valid")
+            unit_type = length_to_note_type[float(unit_type)]
+        ET.SubElement(metronome_el, "beat-unit").text = unit_type
+        ET.SubElement(metronome_el, "per-minute").text = str(bpm)
+
+        voice_el = ET.Element("voice")
+        voice_el.text = str(voice)
+        self.append(voice_el)
+        staff_el = ET.Element("staff")
+        staff_el.text = str(staff)
+        self.append(staff_el)
+
+
+#  --------------------------------------------------- EXAMPLE ----------------------------------------------------- #
 
 # my_score = Score("Test Score", "D. Trump")
 # violin_part = Part("Violin")
@@ -361,6 +402,7 @@ class Score(ET.Element):
 # violin_part.append(measure)
 # measure = Measure(2, (5, 8))
 # measure.append(Note(Pitch(70), Duration(1.5), articulations=[ET.Element("tenuto")]))
+# measure.append(MetronomeMark(2, 100))
 # measure.append(Note(Pitch(65), Duration(1.0), ties="start"))
 # violin_part.append(measure)
 # measure = Measure(3, barline="end")
