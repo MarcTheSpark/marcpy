@@ -3,6 +3,14 @@ __author__ = 'mpevans'
 from MusicXMLExporter import *
 from MeasuresBeatsNotes import *
 from marcpy.usefulimports.interval import IntervalSet
+from copy import deepcopy
+from collections import defaultdict
+
+# how various notations split when we divide a note up
+how_they_split = defaultdict(lambda: "all", {
+    "Tuplet(start)": "first",
+    "Tuplet(end)": "end"
+})
 
 
 def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None, time_signature="4/4", tempo=60, max_divisions=8,
@@ -16,7 +24,7 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
                                                              max_indigestibility=max_indigestibility,
                                                              simplicity_preference=simplicity_preference)]
 
-    # derive beat schemes from measure schemes
+    # make a list of the beat schemes (up to repeating the last one)
     beat_schemes = []
     for ms in measure_schemes:
         beat_schemes.extend(ms.beat_quantization_schemes)
@@ -27,20 +35,21 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
     # keep repeating the last measure_scheme until we get to the end of the recording
     total_measure_schemes_length = sum(ms.length for ms in measure_schemes)
     while total_measure_schemes_length < total_quarters_length:
-        measure_schemes.append(measure_schemes[-1])
+        measure_schemes.append(deepcopy(measure_schemes[-1]))
         beat_schemes.extend(measure_schemes[-1].beat_quantization_schemes)
         total_measure_schemes_length += measure_schemes[-1].length
 
-    print measure_schemes
-    print beat_schemes
-    exit()
-
-    measure_break_points, beat_break_points, tempo_marks = \
-        get_measure_and_beat_info(measure_schemes, total_quarters_length)
+    # set the start_times of all the measure and beat schemes
+    current_time = 0
+    for measure_scheme in measure_schemes:
+        measure_scheme.start_time = current_time
+        for beat_scheme in measure_scheme.beat_quantization_schemes:
+            beat_scheme.start_time = current_time
+            current_time += beat_scheme.beat_length
 
     xml_score = Score(title, composer)
-    for i, (part_recording, part_name) in enumerate(zip(recorded_parts, part_names)):
-        print "Working on Part " + str(i+1) + "..."
+    for which_part, (part_recording, part_name) in enumerate(zip(recorded_parts, part_names)):
+        print "Working on Part " + str(which_part+1) + "..."
 
         # make the music21 part object, and add the instrument
         xml_part = Part(part_name)
@@ -48,29 +57,26 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
         # quantize the recording, also noting the beat divisors
         quantized_recording, beat_divisors = _quantize_recording(part_recording, beat_schemes)
 
-        #TODO: UNDERSTAND WHY THIS IS NECESSARY. Why is beat_divisors coming up short?
-        if len(beat_divisors) < len(beat_break_points) - 1:
-            beat_divisors = beat_divisors + [beat_divisors[-1]]
-
         # merge notes into chords
         quantized_recording = _collapse_recording_chords(quantized_recording)
         # separate it into non-overlapping voices
         quantized_separated_voices = _separate_into_non_overlapping_voices(quantized_recording, 0.001)
         # clean up pc_voices: add rests, break into ties, etc.
-        clean_pc_voices = [_raw_voice_to_pretty_looking_voice(v, measure_break_points, beat_break_points)
+        clean_pc_voices = [_raw_voice_to_pretty_looking_voice(v, beat_schemes)
                            for v in quantized_separated_voices]
 
         for v in clean_pc_voices:
             # this method modifies in place
-            _set_tuplets_for_notes_in_voice(v, beat_break_points, beat_divisors)
-            _break_notes_into_undotted_constituents(v, beat_break_points)
+            _set_tuplets_for_notes_in_voice(v, beat_schemes, beat_divisors)
+            _break_notes_into_undotted_constituents(v, beat_schemes)
 
         # create xml measure objects with time signatures and add to the part
         last_time_signature = None
+        last_tempo = None
         measure_num = 1
-        for k in range(len(measure_break_points)-1):
-            measure_start, measure_time_signature = measure_break_points[k]
-            measure_end, _ = measure_break_points[k+1]
+        for measure_scheme in measure_schemes:
+            measure_start, measure_time_signature = measure_scheme.start_time, measure_scheme.tuple_time_signature
+            measure_end = measure_scheme.end_time
 
             # make a xml measure with the appropriate time signature
             clef = "treble" if measure_num == 1 else None
@@ -82,11 +88,18 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
             xml_part.append(xml_measure)
             measure_num += 1
 
+            # add any metronome marks we need based on beat tempos
+            offset = 0
+            for beat_scheme in measure_scheme.beat_quantization_schemes:
+                if beat_scheme.tempo != last_tempo:
+                    xml_measure.append(MetronomeMark("quarter", beat_scheme.tempo, offset=offset))
+                    last_tempo = beat_scheme.tempo
+                offset += beat_scheme.beat_length
+
             # now we add the notes to the measure
             # first group notes into the voices in the measure
             voices_in_measure = []
             for voice in clean_pc_voices:
-                #TODO: MAKE TEMPO PART BE STORED IN THE PC NOTE THINGS
                 voice_in_measure = [pc_note for pc_note in voice
                                     if measure_start <= pc_note.start_time < measure_end]
                 # make sure one of them is not a rest
@@ -104,50 +117,45 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
                     for pc_note in voice_in_measure:
                         assert isinstance(pc_note, MPNote)
 
-                        if i == 0 and which_voice == 0 and pc_note.start_time in tempo_marks:
-                            # need to add metronome marks
-                            bpm, beat_length = tempo_marks[pc_note.start_time]
-                            xml_measure.append(MetronomeMark("quarter", bpm))
-
                         # and each length component in each note
                         for component_num, length_component in enumerate(pc_note.length_without_tuplet):
                             if component_num == 0 and component_num == len(pc_note.length_without_tuplet) - 1:
                                 # only one component, so tie type is just whatever the pc_note is
                                 ties = pc_note.tie
+                                component_notations = pc_note.notations
+                                component_articulations = pc_note.notations
                             elif component_num == 0:
                                 # multiple components, of which this is the first
                                 ties = "continue" if pc_note.tie == "end" or pc_note.tie == "continue" else "start"
+                                component_notations = [n for n in pc_note.notations if
+                                                       how_they_split[str(n)] in "start or all"]
+                                component_articulations = [a for a in pc_note.articulations if
+                                                           how_they_split[str(a)] in "start or all"]
                             elif component_num == len(pc_note.length_without_tuplet) - 1:
                                 # multiple components, of which this is the last
                                 ties = "continue" if pc_note.tie == "start" or pc_note.tie == "continue" else "end"
+                                component_notations = [n for n in pc_note.notations if
+                                                       how_they_split[str(n)] in "end or all"]
+                                component_articulations = [a for a in pc_note.articulations if
+                                                           how_they_split[str(a)] in "end or all"]
                             else:
                                 ties = "continue"
+                                component_notations = [n for n in pc_note.notations if
+                                                       how_they_split[str(n)] == "all"]
+                                component_articulations = [a for a in pc_note.articulations if
+                                                           how_they_split[str(a)] == "all"]
 
                             xml_measure.append(Note(
                                 None if pc_note.pitch is None else Pitch(pc_note.pitch),
                                 duration=Duration(length_component, pc_note.time_modification),
-                                voice=which_voice, notations=pc_note.notations, articulations=pc_note.articulations,
+                                voice=which_voice+1, notations=component_notations, articulations=component_articulations,
                                 ties=ties)
                             )
         xml_score.add_part(xml_part)
     xml_score.save_to_file(file_name)
 
-    # # add in the tempo
-    # current_beat = 0
-    # current_tempo = None
-    # for beat_scheme in beat_schemes:
-    #     assert isinstance(beat_scheme, BeatQuantizationScheme)
-    #     if beat_scheme.tempo != current_tempo:
-    #         m21_score.insert(current_beat, MetronomeMark(number=beat_scheme.tempo))
-    #         current_tempo = beat_scheme.tempo
-    #     current_beat += beat_scheme.beat_length
-    #
-    # m21_score.show("text")
-    #
-    # # utilities.save_object(m21_score, "lastm21score.pk")
-    # save_m21_to_xml(m21_score, name)
-
 # [ ---------- Utilities -----------]
+
 
 def _get_recording_quarters_length(recorded_parts, beat_schemes):
     # returns the length in seconds, and then the length in quarters, taking into account the tempos of the beats
@@ -164,48 +172,6 @@ def _get_recording_quarters_length(recorded_parts, beat_schemes):
         if current_beat + 1 < len(beat_schemes):
             current_beat += 1
     return quarter_length
-
-
-def get_measure_and_beat_info(measure_schemes, total_length):
-    # returns a list of break points; handy for splitting notes into tied components
-    # measure break points are coupled with time signatures
-    measure_break_points = []
-    beat_break_points = []
-    tempo_marks = {}
-
-    which_measure_scheme = 0
-    current_measure_start_time = 0.0
-    last_tempo = None
-    while current_measure_start_time < total_length:
-        current_measure_scheme = measure_schemes[which_measure_scheme]
-        assert isinstance(current_measure_scheme, MeasureScheme)
-        # add the measure break points
-        measure_break_points.append((current_measure_start_time, current_measure_scheme.tuple_time_signature))
-        # add the beat break points
-        beat_start_displacement = 0.0
-        for beat_scheme in current_measure_scheme.beat_quantization_schemes:
-            assert isinstance(beat_scheme, BeatQuantizationScheme)
-
-            if beat_scheme.tempo != last_tempo:
-                tempo_marks[current_measure_start_time + beat_start_displacement] = \
-                    (beat_scheme.tempo, beat_scheme.beat_length)
-                last_tempo = beat_scheme.tempo
-
-            beat_break_points.append(current_measure_start_time + beat_start_displacement)
-            beat_start_displacement += beat_scheme.beat_length
-
-        # move to the next measure
-        current_measure_start_time += current_measure_scheme.measure_length
-        # move to the next measure scheme, if there is another, otherwise keep repeating the last one
-        if which_measure_scheme + 1 < len(measure_schemes):
-            which_measure_scheme += 1
-
-    # add in the end of the last measure
-    measure_break_points.append((current_measure_start_time,
-                                 measure_schemes[which_measure_scheme].tuple_time_signature))
-    beat_break_points.append(current_measure_start_time)
-
-    return measure_break_points, beat_break_points, tempo_marks
 
 # [ ------- Part Processing ------- ]
 
@@ -237,8 +203,7 @@ def _quantize_recording(recording_in_seconds, beat_schemes, onset_termination_we
         # get the beat scheme for this beat
         this_beat_scheme = beat_schemes[current_beat_scheme]
         assert isinstance(this_beat_scheme, BeatQuantizationScheme)
-        if current_beat_scheme + 1 < len(beat_schemes):
-            current_beat_scheme += 1
+        current_beat_scheme += 1
 
         # get the beat length and end time in quarters and seconds
         quarters_beat_length = this_beat_scheme.beat_length
@@ -256,50 +221,54 @@ def _quantize_recording(recording_in_seconds, beat_schemes, onset_termination_we
         while len(raw_terminations) > 0 and raw_terminations[0][0] < seconds_beat_end_time:
             terminations_to_quantize.append(raw_terminations.pop(0))
 
-        # try out each quantization division
-        best_divisor = None
-        best_error = float("inf")
-        for divisor, undesirability in this_beat_scheme.quantization_divisions:
-            seconds_piece_length = seconds_beat_length / divisor
-            total_squared_onset_error = 0
-            for onset in onsets_to_quantize:
-                time_since_beat_start = onset[0] - seconds_beat_start_time
-                total_squared_onset_error += (time_since_beat_start - utilities.round_to_multiple(time_since_beat_start, seconds_piece_length)) ** 2
-            total_squared_term_error = 0
-            for term in terminations_to_quantize:
-                time_since_beat_start = term[0] - seconds_beat_start_time
-                total_squared_term_error += (time_since_beat_start - utilities.round_to_multiple(time_since_beat_start, seconds_piece_length)) ** 2
-            this_div_error_score = undesirability * (onset_termination_weighting * total_squared_term_error +
-                                                     (1 - onset_termination_weighting) * total_squared_onset_error)
-            if this_div_error_score < best_error:
-                best_divisor = divisor
-                best_error = this_div_error_score
+        if len(onsets_to_quantize) + len(terminations_to_quantize) == 0:
+            # an empty beat, nothing to see here
+            beat_divisors.append(None)
+        else:
+            # try out each quantization division
+            best_divisor = None
+            best_error = float("inf")
+            for divisor, undesirability in this_beat_scheme.quantization_divisions:
+                seconds_piece_length = seconds_beat_length / divisor
+                total_squared_onset_error = 0
+                for onset in onsets_to_quantize:
+                    time_since_beat_start = onset[0] - seconds_beat_start_time
+                    total_squared_onset_error += (time_since_beat_start - utilities.round_to_multiple(time_since_beat_start, seconds_piece_length)) ** 2
+                total_squared_term_error = 0
+                for term in terminations_to_quantize:
+                    time_since_beat_start = term[0] - seconds_beat_start_time
+                    total_squared_term_error += (time_since_beat_start - utilities.round_to_multiple(time_since_beat_start, seconds_piece_length)) ** 2
+                this_div_error_score = undesirability * (onset_termination_weighting * total_squared_term_error +
+                                                         (1 - onset_termination_weighting) * total_squared_onset_error)
+                if this_div_error_score < best_error:
+                    best_divisor = divisor
+                    best_error = this_div_error_score
 
-        best_piece_length_quarters = this_beat_scheme.beat_length / best_divisor
-        best_piece_length_seconds = seconds_beat_length / best_divisor
+            best_piece_length_quarters = this_beat_scheme.beat_length / best_divisor
+            best_piece_length_seconds = seconds_beat_length / best_divisor
 
-        for onset, pc_note in onsets_to_quantize:
-            pieces_past_beat_start = round((onset - seconds_beat_start_time) / best_piece_length_seconds)
-            pc_note_to_quantize_start_time[pc_note] = quarters_beat_start_time + pieces_past_beat_start * best_piece_length_quarters
-            # save this info for later, when we need to assure they all have the same Tuplet
-            pc_note.start_time_divisor = best_divisor
+            for onset, pc_note in onsets_to_quantize:
+                pieces_past_beat_start = round((onset - seconds_beat_start_time) / best_piece_length_seconds)
+                pc_note_to_quantize_start_time[pc_note] = quarters_beat_start_time + pieces_past_beat_start * best_piece_length_quarters
+                # save this info for later, when we need to assure they all have the same Tuplet
+                pc_note.start_time_divisor = best_divisor
 
-        for termination, pc_note in terminations_to_quantize:
-            pieces_past_beat_start = round((termination - seconds_beat_start_time) / best_piece_length_seconds)
-            pc_note_to_quantize_end_time[pc_note] = quarters_beat_start_time + pieces_past_beat_start * best_piece_length_quarters
-            if pc_note_to_quantize_end_time[pc_note] == pc_note_to_quantize_start_time[pc_note]:
-                # if the quantization collapses the start and end times of a note to the same point, adjust the
-                # end time so the the note is a single piece_length long.
-                if pc_note_to_quantize_end_time[pc_note] + best_piece_length_quarters <= quarters_beat_end_time:
-                    # unless both are quantized to the start of the next beat, just move the end one piece forward
-                    pc_note_to_quantize_end_time[pc_note] += best_piece_length_quarters
-                else:
-                    # if they're at the start of the next beat, move the start one piece back
-                    pc_note_to_quantize_start_time[pc_note] -= best_piece_length_quarters
-            # save this info for later, when we need to assure they all have the same Tuplet
-            pc_note.end_time_divisor = best_divisor
+            for termination, pc_note in terminations_to_quantize:
+                pieces_past_beat_start = round((termination - seconds_beat_start_time) / best_piece_length_seconds)
+                pc_note_to_quantize_end_time[pc_note] = quarters_beat_start_time + pieces_past_beat_start * best_piece_length_quarters
+                if pc_note_to_quantize_end_time[pc_note] == pc_note_to_quantize_start_time[pc_note]:
+                    # if the quantization collapses the start and end times of a note to the same point, adjust the
+                    # end time so the the note is a single piece_length long.
+                    if pc_note_to_quantize_end_time[pc_note] + best_piece_length_quarters <= quarters_beat_end_time:
+                        # unless both are quantized to the start of the next beat, just move the end one piece forward
+                        pc_note_to_quantize_end_time[pc_note] += best_piece_length_quarters
+                    else:
+                        # if they're at the start of the next beat, move the start one piece back
+                        pc_note_to_quantize_start_time[pc_note] -= best_piece_length_quarters
+                # save this info for later, when we need to assure they all have the same Tuplet
+                pc_note.end_time_divisor = best_divisor
 
-        beat_divisors.append(best_divisor)
+            beat_divisors.append(best_divisor)
 
         quarters_beat_start_time += quarters_beat_length
         seconds_beat_start_time += seconds_beat_length
@@ -353,17 +322,18 @@ def _separate_into_non_overlapping_voices(recording, max_overlap):
 # [ ------- Voice Pre-Processing ------- ]
 
 
-def _raw_voice_to_pretty_looking_voice(pc_voice, measure_break_points, beat_break_points):
-    pc_voice = _add_rests(pc_voice, beat_break_points)
-    pc_voice = _break_into_ties(pc_voice, beat_break_points)
+def _raw_voice_to_pretty_looking_voice(pc_voice, beat_schemes):
+    pc_voice = _add_rests(pc_voice, beat_schemes)
+    pc_voice = _break_into_ties(pc_voice, beat_schemes)
     return pc_voice
 
 
-def _break_into_ties(recording_in_seconds, beat_break_points):
+def _break_into_ties(recording_in_seconds, beat_schemes):
     # first, create an array of beat lengths that repeats the length of
     # the last beat_scheme until we reach the end of the voice
 
-    for beat_start_time in beat_break_points:
+    for beat_scheme in beat_schemes:
+        beat_start_time = beat_scheme.start_time
         for i in range(len(recording_in_seconds)):
             this_pc_note = recording_in_seconds[i]
             if this_pc_note.start_time < beat_start_time < this_pc_note.start_time + this_pc_note.length:
@@ -380,11 +350,10 @@ def _break_into_ties(recording_in_seconds, beat_break_points):
     return recording_in_seconds
 
 
-def _add_rests(recording_in_seconds, beat_break_points):
+def _add_rests(recording_in_seconds, beat_schemes):
     new_recording = list(recording_in_seconds)
     # first, create all the intervals representing the beats
-    beat_intervals = [IntervalSet.between(beat_break_points[i], beat_break_points[i+1])
-                      for i in range(len(beat_break_points) - 1)]
+    beat_intervals = [IntervalSet.between(beat_scheme.start_time, beat_scheme.end_time) for beat_scheme in beat_schemes]
 
     # subtract out all the time occupied by a note already
     for pc_note in recording_in_seconds:
@@ -409,6 +378,10 @@ def _combine_tied_quarters_and_longer(recording_in_seconds, measure_schemes):
 
 
 def _get_tuplet_type(beat_length, beat_div):
+    if beat_div is None:
+        # the beat was empty...
+        return None
+
     # preference is to express the
     beat_length_fraction = Fraction(beat_length).limit_denominator()
     normal_number = beat_length_fraction.numerator
@@ -425,28 +398,31 @@ def _get_tuplet_type(beat_length, beat_div):
         return beat_div, normal_number, 4.0/normal_type
 
 
-def _set_tuplets_for_notes_in_voice(voice, beat_break_points, beat_divisors):
+def _set_tuplets_for_notes_in_voice(voice, beat_schemes, beat_divisors):
     # we assume notes_and_rests is in order
     voice = list(voice)
-    for beat_start, beat_end, beat_div in zip(beat_break_points[:-1], beat_break_points[1:], beat_divisors):
-        beat_length = beat_end - beat_start
-        tuplet_type = _get_tuplet_type(beat_length, beat_div)
-        while len(voice) > 0 and voice[0].start_time < beat_end:
+    for beat_scheme, beat_div in zip(beat_schemes, beat_divisors):
+        tuplet_type = _get_tuplet_type(beat_scheme.beat_length, beat_div)
+        while len(voice) > 0 and voice[0].start_time < beat_scheme.end_time:
             this_note = voice.pop(0)
             assert isinstance(this_note, MPNote)
             if tuplet_type is not None:
                 this_note.time_modification = tuplet_type
                 this_note.length_without_tuplet = this_note.length * float(tuplet_type[0]) / tuplet_type[1]
-                if this_note.start_time == beat_start:
+                if this_note.start_time == beat_scheme.start_time:
                     this_note.notations.append(Tuplet("start"))
-                if this_note.start_time + this_note.length == beat_end:
+                if this_note.start_time + this_note.length == beat_scheme.end_time:
                     this_note.notations.append(Tuplet("end"))
             else:
                 this_note.length_without_tuplet = this_note.length
-        print beat_start, beat_end
-    print voice
+
+    # there may be still a few notes left: these will be trailing rests that have been added since quantization
+    # and for which no beat divisor has been calculated. We can safely set their length_without_tuplet to their length
+    for remaining_rest in voice:
+        assert isinstance(remaining_rest, MPNote)
+        remaining_rest.length_without_tuplet = remaining_rest.length
 
 
-def _break_notes_into_undotted_constituents(voice, beat_break_points):
+def _break_notes_into_undotted_constituents(voice, beat_schemes):
     for pc_note in voice:
         pc_note.length_without_tuplet = MPNote.length_to_undotted_constituents(pc_note.length_without_tuplet)

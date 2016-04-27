@@ -366,7 +366,7 @@ class Score(ET.Element):
 
 class MetronomeMark(ET.Element):
 
-    def __init__(self, unit_type, bpm, voice=1, staff=1):
+    def __init__(self, unit_type, bpm, voice=1, staff=1, offset=0):
         super(MetronomeMark, self).__init__("direction")
         d_type_el = ET.Element("direction-type")
         self.append(d_type_el)
@@ -378,6 +378,11 @@ class MetronomeMark(ET.Element):
             unit_type = length_to_note_type[float(unit_type)]
         ET.SubElement(metronome_el, "beat-unit").text = unit_type
         ET.SubElement(metronome_el, "per-minute").text = str(bpm)
+
+        if offset != 0:
+            offset_el = ET.Element("offset", {"sound": "no"})
+            offset_el.text = str(int(offset * num_beat_divisions))
+            self.append(offset_el)
 
         voice_el = ET.Element("voice")
         voice_el.text = str(voice)

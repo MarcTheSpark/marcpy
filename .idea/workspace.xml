@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1851a264-a5ae-475c-8539-056ca0223202" name="Default" comment="Reorganizing and cleaning up Playcorder">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/playcorder/RecordingToXML.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py" afterPath="$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/MusicXMLExporter.py" afterPath="$PROJECT_DIR$/playcorder/MusicXMLExporter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/mpevans.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/mpevans.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/RecordingToXML.py" afterPath="$PROJECT_DIR$/playcorder/RecordingToXML.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/bob.xml" afterPath="$PROJECT_DIR$/playcorder/bob.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/playcorder.py" afterPath="$PROJECT_DIR$/playcorder/playcorder.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utilities.py" afterPath="$PROJECT_DIR$/utilities.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="marcpy.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,11 +41,11 @@
       <file leaf-file-name="playcorder.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="384" column="32" selection-start="17620" selection-end="17620" vertical-scroll-proportion="-15.961538" vertical-offset="4400" max-vertical-offset="4995">
+            <state line="13" column="19" selection-start="349" selection-end="349" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="5115">
               <folding>
                 <element signature="e#24#54#0" expanded="true" />
-                <element signature="e#8098#9057#0" expanded="false" />
-                <element signature="e#9336#11216#0" expanded="false" />
+                <element signature="e#8235#9194#0" expanded="false" />
+                <element signature="e#9473#11353#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -56,7 +54,7 @@
       <file leaf-file-name="MeasuresBeatsNotes.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="132" column="8" selection-start="7384" selection-end="7384" vertical-scroll-proportion="0.0" vertical-offset="1599" max-vertical-offset="2805">
+            <state line="6" column="0" selection-start="122" selection-end="122" vertical-scroll-proportion="-3.4615386" vertical-offset="0" max-vertical-offset="3135">
               <folding>
                 <element signature="e#24#54#0" expanded="true" />
               </folding>
@@ -67,7 +65,7 @@
       <file leaf-file-name="RecordingToXML.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/playcorder/RecordingToXML.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="0" selection-start="1971" selection-end="1971" vertical-scroll-proportion="0.8389423" vertical-offset="296" max-vertical-offset="6855">
+            <state line="115" column="0" selection-start="5633" selection-end="5633" vertical-scroll-proportion="4.1366906" vertical-offset="0" max-vertical-offset="6495">
               <folding>
                 <element signature="e#24#54#0" expanded="true" />
               </folding>
@@ -78,7 +76,7 @@
       <file leaf-file-name="MusicXMLExporter.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playcorder/MusicXMLExporter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="327" column="0" selection-start="13571" selection-end="13571" vertical-scroll-proportion="-119.23077" vertical-offset="1745" max-vertical-offset="6870">
+            <state line="407" column="30" selection-start="17043" selection-end="17043" vertical-scroll-proportion="-216.34616" vertical-offset="420" max-vertical-offset="6945">
               <folding />
             </state>
           </provider>
@@ -159,10 +157,10 @@
         <option value="$PROJECT_DIR$/../music21/stream/__init__.py" />
         <option value="$PROJECT_DIR$/../../xml/etree/ElementTree.py" />
         <option value="$PROJECT_DIR$/utilities.py" />
-        <option value="$PROJECT_DIR$/playcorder/MusicXMLExporter.py" />
-        <option value="$PROJECT_DIR$/playcorder/playcorder.py" />
-        <option value="$PROJECT_DIR$/playcorder/RecordingToXML.py" />
         <option value="$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py" />
+        <option value="$PROJECT_DIR$/playcorder/MusicXMLExporter.py" />
+        <option value="$PROJECT_DIR$/playcorder/RecordingToXML.py" />
+        <option value="$PROJECT_DIR$/playcorder/playcorder.py" />
       </list>
     </option>
   </component>
@@ -349,27 +347,6 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <configuration default="false" name="Doctest FrozenIntervalSet.copy" type="tests" factoryName="Doctests" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/playcorder" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="marcpy" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/usefulimports/interval.py" />
-      <option name="CLASS_NAME" value="FrozenIntervalSet" />
-      <option name="METHOD_NAME" value="copy" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_METHOD" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
     <configuration default="false" name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -419,6 +396,24 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="marcpy" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utilities.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="RecordingToXML" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/playcorder" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/playcorder/RecordingToXML.py" />
       <option name="PARAMETERS" value="" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
@@ -547,18 +542,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.playcorder" />
-      <item index="1" class="java.lang.String" itemvalue="Python tests.Doctest FrozenIntervalSet.copy" />
-      <item index="2" class="java.lang.String" itemvalue="Python.test" />
-      <item index="3" class="java.lang.String" itemvalue="Python.MusicXMLExporter" />
-      <item index="4" class="java.lang.String" itemvalue="Python.utilities" />
+      <item index="1" class="java.lang.String" itemvalue="Python.test" />
+      <item index="2" class="java.lang.String" itemvalue="Python.MusicXMLExporter" />
+      <item index="3" class="java.lang.String" itemvalue="Python.utilities" />
+      <item index="4" class="java.lang.String" itemvalue="Python.RecordingToXML" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.playcorder" />
-        <item index="1" class="java.lang.String" itemvalue="Python.utilities" />
-        <item index="2" class="java.lang.String" itemvalue="Python.MusicXMLExporter" />
-        <item index="3" class="java.lang.String" itemvalue="Python.test" />
-        <item index="4" class="java.lang.String" itemvalue="Python tests.Doctest FrozenIntervalSet.copy" />
+        <item index="1" class="java.lang.String" itemvalue="Python.RecordingToXML" />
+        <item index="2" class="java.lang.String" itemvalue="Python.utilities" />
+        <item index="3" class="java.lang.String" itemvalue="Python.MusicXMLExporter" />
+        <item index="4" class="java.lang.String" itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -623,14 +618,14 @@
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286908" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32980132" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32980132" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847682" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18442933" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847682" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32847682" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31043592" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -674,8 +669,8 @@
         <state line="955" column="0" selection-start="48842" selection-end="49222" vertical-scroll-proportion="0.0" vertical-offset="14325" max-vertical-offset="14940">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8098#9057#0" expanded="false" />
-            <element signature="e#9336#11216#0" expanded="false" />
+            <element signature="e#8235#9194#0" expanded="false" />
+            <element signature="e#9473#11353#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -730,8 +725,8 @@
         <state line="231" column="51" selection-start="10578" selection-end="10578" vertical-scroll-proportion="0.0" vertical-offset="3240" max-vertical-offset="4710">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8098#9057#0" expanded="false" />
-            <element signature="e#9336#11216#0" expanded="false" />
+            <element signature="e#8235#9194#0" expanded="false" />
+            <element signature="e#9473#11353#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -777,8 +772,8 @@
         <state line="185" column="34" selection-start="8116" selection-end="8116" vertical-scroll-proportion="0.0" vertical-offset="2775" max-vertical-offset="5835">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8098#9057#0" expanded="false" />
-            <element signature="e#9336#11216#0" expanded="false" />
+            <element signature="e#8235#9194#0" expanded="false" />
+            <element signature="e#9473#11353#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -810,8 +805,8 @@
         <state line="222" column="80" selection-start="10204" selection-end="10204" vertical-scroll-proportion="0.0" vertical-offset="3330" max-vertical-offset="5775">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8098#9057#0" expanded="false" />
-            <element signature="e#9336#11216#0" expanded="false" />
+            <element signature="e#8235#9194#0" expanded="false" />
+            <element signature="e#9473#11353#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -843,8 +838,8 @@
         <state line="359" column="3" selection-start="16290" selection-end="16290" vertical-scroll-proportion="0.0" vertical-offset="5370" max-vertical-offset="5370">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8098#9057#0" expanded="false" />
-            <element signature="e#9336#11216#0" expanded="false" />
+            <element signature="e#8235#9194#0" expanded="false" />
+            <element signature="e#9473#11353#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -869,8 +864,8 @@
         <state line="112" column="0" selection-start="4693" selection-end="4693" vertical-scroll-proportion="0.0" vertical-offset="1680" max-vertical-offset="3495">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8098#9057#0" expanded="false" />
-            <element signature="e#9336#11216#0" expanded="false" />
+            <element signature="e#8235#9194#0" expanded="false" />
+            <element signature="e#9473#11353#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -969,36 +964,36 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/MusicXMLExporter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="327" column="0" selection-start="13571" selection-end="13571" vertical-scroll-proportion="-119.23077" vertical-offset="1745" max-vertical-offset="6870">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="132" column="8" selection-start="7384" selection-end="7384" vertical-scroll-proportion="0.0" vertical-offset="1599" max-vertical-offset="2805">
+        <state line="6" column="0" selection-start="122" selection-end="122" vertical-scroll-proportion="-3.4615386" vertical-offset="0" max-vertical-offset="3135">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/MusicXMLExporter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="407" column="30" selection-start="17043" selection-end="17043" vertical-scroll-proportion="-216.34616" vertical-offset="420" max-vertical-offset="6945">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="384" column="32" selection-start="17620" selection-end="17620" vertical-scroll-proportion="-15.961538" vertical-offset="4400" max-vertical-offset="4995">
+        <state line="13" column="19" selection-start="349" selection-end="349" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="5115">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8098#9057#0" expanded="false" />
-            <element signature="e#9336#11216#0" expanded="false" />
+            <element signature="e#8235#9194#0" expanded="false" />
+            <element signature="e#9473#11353#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/RecordingToXML.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="0" selection-start="1971" selection-end="1971" vertical-scroll-proportion="0.8389423" vertical-offset="296" max-vertical-offset="6855">
+        <state line="115" column="0" selection-start="5633" selection-end="5633" vertical-scroll-proportion="4.1366906" vertical-offset="0" max-vertical-offset="6495">
           <folding>
             <element signature="e#24#54#0" expanded="true" />
           </folding>

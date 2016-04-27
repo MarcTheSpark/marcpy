@@ -11,6 +11,9 @@ from marcpy.usefulimports.interval import IntervalSet
 from MeasuresBeatsNotes import *
 import RecordingToXML
 
+# TODO: fix voices!
+# TODO: add in staccato, tenuto as variants. Also add in text variants. Finally put in cent values as text variants
+
 
 class Playcorder:
 
@@ -378,12 +381,17 @@ pc = Playcorder(soundfont_path="default")
 piano = pc.add_midi_part(0, "Piano")
 guitar = pc.add_midi_part((0, 27), "Guitar")
 
-pc.start_recording([piano, guitar])
-import random
-for i in range(15):
-    l = random.random()*0.5+0.1
-    random.choice([piano, guitar]).play_note(random.randrange(50, 70), 0.5, l)
-    time.sleep(l + random.random()*0.5)
+pc.start_recording([piano])
+
+notes = [67, 45, 67, 56, 78, 67, 56, 45, 56, 67]
+for note in notes:
+    piano.play_note(note, 0.5, 1.0)
+    time.sleep(0.75)
+# import random
+# for i in range(15):
+#     l = random.random()*0.5+0.1
+#     random.choice([piano, guitar]).play_note(50 + random.random()*20, 0.5, l)
+#     time.sleep(random.random()*0.5)
 
 pc.stop_recording()
 pc.save_to_xml_file(file_name="bob.xml", measure_schemes=[MeasureScheme.from_time_signature("3/4", 120, max_divisions=6),

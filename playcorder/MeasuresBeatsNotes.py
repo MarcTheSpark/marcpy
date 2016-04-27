@@ -3,6 +3,7 @@ __author__ = 'mpevans'
 from fractions import Fraction
 
 from marcpy import utilities, barlicity
+from copy import deepcopy
 
 
 class MPNote:
@@ -102,6 +103,10 @@ class BeatQuantizationScheme:
         # when used to quantize something, this gets set
         self.start_time = 0
 
+    @property
+    def end_time(self):
+        return self.start_time + self.beat_length
+
     def __str__(self):
         return "BeatQuantizationScheme [tempo=" + str(self.tempo) + ", beat_length=" + str(self.beat_length) + \
                ", quantization_divisions=" + str(self.quantization_divisions) + "]"
@@ -126,13 +131,19 @@ class MeasureScheme:
         else:
             assert isinstance(beat_quantization_schemes, BeatQuantizationScheme)
             assert utilities.is_multiple(self.measure_length, beat_quantization_schemes.beat_length)
-            self.beat_quantization_schemes = [beat_quantization_schemes] * \
-                int(round(self.measure_length / beat_quantization_schemes.beat_length))
+            num_beats_in_measure = int(round(self.measure_length / beat_quantization_schemes.beat_length))
+            self.beat_quantization_schemes = []
+            for _ in range(num_beats_in_measure):
+                self.beat_quantization_schemes.append(deepcopy(beat_quantization_schemes))
 
         self.length = sum([beat_scheme.beat_length for beat_scheme in self.beat_quantization_schemes])
-        
+
         # when used to quantize something, this gets set
         self.start_time = 0
+
+    @property
+    def end_time(self):
+        return self.start_time + self.length
 
     @staticmethod
     def time_sig_to_string_and_tuple(time_signature):
@@ -153,17 +164,23 @@ class MeasureScheme:
         if tuple_time_signature[1] <= 4:
             beat_length = 4.0 / tuple_time_signature[1]
             num_beats = int(round(measure_length/beat_length))
-            beat_quantization_schemes = [BeatQuantizationScheme(tempo, beat_length, max_divisions=max_divisions,
-                                                                max_indigestibility=max_indigestibility,
-                                                                simplicity_preference=simplicity_preference)] * num_beats
+            beat_quantization_schemes = []
+            for _ in range(num_beats):
+                beat_quantization_schemes.append(BeatQuantizationScheme(tempo, beat_length, max_divisions=max_divisions,
+                                                                        max_indigestibility=max_indigestibility,
+                                                                        simplicity_preference=simplicity_preference))
         else:
             # we're dealing with a denominator of 8, 16, etc., so either we have a compound meter, or an uneven meter
             if utilities.is_multiple(tuple_time_signature[0], 3):
                 beat_length = 4.0 / tuple_time_signature[1] * 3
                 num_beats = int(round(measure_length/beat_length))
-                beat_quantization_schemes = [BeatQuantizationScheme(tempo, beat_length, max_divisions=max_divisions,
-                                                                    max_indigestibility=max_indigestibility,
-                                                                    simplicity_preference=simplicity_preference)] * num_beats
+                beat_quantization_schemes = []
+                for _ in range(num_beats):
+                    beat_quantization_schemes.append(BeatQuantizationScheme(tempo, beat_length,
+                                                                            max_divisions=max_divisions,
+                                                                            max_indigestibility=max_indigestibility,
+                                                                            simplicity_preference=simplicity_preference))
+
             else:
                 duple_beat_length = 4.0 / tuple_time_signature[1] * 2
                 triple_beat_length = 4.0 / tuple_time_signature[1] * 3
@@ -173,10 +190,15 @@ class MeasureScheme:
                 else:
                     num_duple_beats = int(round((measure_length-triple_beat_length)/duple_beat_length))
                     num_triple_beats = 1
-                beat_quantization_schemes = [BeatQuantizationScheme(tempo, duple_beat_length, max_divisions=max_divisions,
-                                                                    max_indigestibility=max_indigestibility,
-                                                                    simplicity_preference=simplicity_preference)] * num_duple_beats + \
-                                            [BeatQuantizationScheme(tempo, triple_beat_length, max_divisions=max_divisions,
-                                                                    max_indigestibility=max_indigestibility,
-                                                                    simplicity_preference=simplicity_preference)] * num_triple_beats
+                beat_quantization_schemes = []
+                for _ in range(num_duple_beats):
+                    beat_quantization_schemes.append(BeatQuantizationScheme(tempo, duple_beat_length,
+                                                                            max_divisions=max_divisions,
+                                                                            max_indigestibility=max_indigestibility,
+                                                                            simplicity_preference=simplicity_preference))
+                for _ in range(num_triple_beats):
+                    beat_quantization_schemes.append(BeatQuantizationScheme(tempo, triple_beat_length,
+                                                                            max_divisions=max_divisions,
+                                                                            max_indigestibility=max_indigestibility,
+                                                                            simplicity_preference=simplicity_preference))
         return cls(time_signature, beat_quantization_schemes)
