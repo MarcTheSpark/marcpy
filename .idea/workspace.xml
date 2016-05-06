@@ -2,14 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1851a264-a5ae-475c-8539-056ca0223202" name="Default" comment="Reorganizing and cleaning up Playcorder">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/midi/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/supercollider/README.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/supercollider/executable/Test.scd" afterPath="$PROJECT_DIR$/supercollider/Test.scd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/mpevans.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/mpevans.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py" afterPath="$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/MusicXMLExporter.py" afterPath="$PROJECT_DIR$/playcorder/MusicXMLExporter.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/RecordingToXML.py" afterPath="$PROJECT_DIR$/playcorder/RecordingToXML.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/bob.xml" afterPath="$PROJECT_DIR$/playcorder/bob.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playcorder/playcorder.py" afterPath="$PROJECT_DIR$/playcorder/playcorder.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scales.py" afterPath="$PROJECT_DIR$/scales.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/supercollider/supercollider.py" afterPath="$PROJECT_DIR$/supercollider/supercollider.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utilities.py" afterPath="$PROJECT_DIR$/utilities.py" />
     </list>
     <ignored path="marcpy.iws" />
     <ignored path=".idea/workspace.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,108 +29,89 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="DaemonCodeAnalyzer">
-    <disable_hints />
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="marcpy" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="utilities.py" pinned="false" current="false" current-in-tab="false">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="utilities.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utilities.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="139" column="0" selection-start="3894" selection-end="3894" vertical-scroll-proportion="0.0" vertical-offset="2085" max-vertical-offset="4860">
+            <state relative-caret-position="330">
+              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="playcorder.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
+      <file leaf-file-name="supercollider.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/supercollider/supercollider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="19" selection-start="349" selection-end="349" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="5115">
+            <state relative-caret-position="2115">
+              <caret line="141" column="35" selection-start-line="141" selection-start-column="35" selection-end-line="141" selection-end-column="35" />
               <folding>
-                <element signature="e#24#54#0" expanded="true" />
-                <element signature="e#8235#9194#0" expanded="false" />
-                <element signature="e#9473#11353#0" expanded="false" />
+                <element signature="e#24#41#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MeasuresBeatsNotes.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="midi_listener.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/midi/midi_listener.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="26" column="42" selection-start-line="26" selection-start-column="42" selection-end-line="26" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MeasuresBeatsNotes.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="0" selection-start="122" selection-end="122" vertical-scroll-proportion="-3.4615386" vertical-offset="0" max-vertical-offset="3135">
-              <folding>
-                <element signature="e#24#54#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="210">
+              <caret line="20" column="66" selection-start-line="20" selection-start-column="66" selection-end-line="20" selection-end-column="66" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RecordingToXML.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RecordingToXML.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playcorder/RecordingToXML.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="115" column="0" selection-start="5633" selection-end="5633" vertical-scroll-proportion="4.1366906" vertical-offset="0" max-vertical-offset="6495">
-              <folding>
-                <element signature="e#24#54#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="225">
+              <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MusicXMLExporter.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="MusicXMLExporter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playcorder/MusicXMLExporter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="407" column="30" selection-start="17043" selection-end="17043" vertical-scroll-proportion="-216.34616" vertical-offset="420" max-vertical-offset="6945">
+            <state relative-caret-position="6135">
+              <caret line="414" column="8" selection-start-line="414" selection-start-column="8" selection-end-line="414" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ElementTree.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../xml/etree/ElementTree.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="475" column="32" selection-start="15993" selection-end="15993" vertical-scroll-proportion="0.0" vertical-offset="7125" max-vertical-offset="25095">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../music21/stream/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="6804" column="0" selection-start="265278" selection-end="265278" vertical-scroll-proportion="0.0" vertical-offset="102060" max-vertical-offset="188820">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="functions.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="180">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="abjad_extensions.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
+      <file leaf-file-name="Test.scd" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/supercollider/Test.scd">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="495">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Test.scd" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/supercollider/executable/Test.scd">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="3" selection-start="476" selection-end="476" vertical-scroll-proportion="0.0" vertical-offset="1" max-vertical-offset="480">
+            <state relative-caret-position="195">
+              <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -143,29 +133,21 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
-    <option name="changedFiles">
+    <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/playcorder/playcorder3.py" />
-        <option value="$PROJECT_DIR$/barlicity.py" />
-        <option value="$PROJECT_DIR$/supercollider/executable/Test.scd" />
-        <option value="$PROJECT_DIR$/supercollider/supercollider.py" />
-        <option value="$PROJECT_DIR$/playcorder/playcorder_instruments.py" />
-        <option value="$PROJECT_DIR$/playcorder/interval.py" />
-        <option value="$PROJECT_DIR$/playcorder/test.py" />
-        <option value="$PROJECT_DIR$/../music21/duration.py" />
-        <option value="$PROJECT_DIR$/../music21/musicxml/m21ToXml.py" />
-        <option value="$PROJECT_DIR$/../music21/stream/__init__.py" />
-        <option value="$PROJECT_DIR$/../../xml/etree/ElementTree.py" />
-        <option value="$PROJECT_DIR$/utilities.py" />
         <option value="$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py" />
-        <option value="$PROJECT_DIR$/playcorder/MusicXMLExporter.py" />
-        <option value="$PROJECT_DIR$/playcorder/RecordingToXML.py" />
-        <option value="$PROJECT_DIR$/playcorder/playcorder.py" />
+        <option value="$PROJECT_DIR$/supercollider/executable/Test.scd" />
+        <option value="$PROJECT_DIR$/supercollider/executable/SCClassLibrary/Extensions/PyCom.sc" />
+        <option value="$PROJECT_DIR$/../OSC.py" />
+        <option value="$PROJECT_DIR$/supercollider/Test.scd" />
+        <option value="$PROJECT_DIR$/utilities.py" />
+        <option value="$PROJECT_DIR$/supercollider/supercollider.py" />
+        <option value="$PROJECT_DIR$/supercollider/README.txt" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="5" />
+    <option name="x" value="33" />
     <option name="y" value="23" />
     <option name="width" value="1344" />
     <option name="height" value="873" />
@@ -203,7 +185,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -213,8 +195,11 @@
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -269,7 +254,25 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="playcorder" />
+              <option name="myItemId" value="supercollider" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="marcpy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="marcpy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="supercollider" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="executable" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -311,7 +314,7 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="921" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
-    <property name="SearchEverywhereHistory" value="ut" />
+    <property name="SearchEverywhereHistory" value="&#10;ut" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -319,14 +322,17 @@
     </option>
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/playcorder" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/supercollider" />
+      <recent name="$PROJECT_DIR$/playcorder" />
       <recent name="$PROJECT_DIR$/usefulimports" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/midi" />
+      <recent name="$PROJECT_DIR$/playcorder" />
+    </key>
   </component>
-  <component name="RunManager" selected="Python.playcorder">
+  <component name="RunManager" selected="Python.supercollider">
     <configuration default="false" name="playcorder" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -341,27 +347,10 @@
       <module name="marcpy" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/playcorder/playcorder.py" />
       <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <RunnerSettings RunnerId="PyDebugRunner" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/playcorder" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="marcpy" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/playcorder/test.py" />
-      <option name="PARAMETERS" value="" />
-      <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
@@ -379,24 +368,7 @@
       <module name="marcpy" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/playcorder/MusicXMLExporter.py" />
       <option name="PARAMETERS" value="" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="utilities" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="marcpy" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utilities.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
@@ -415,8 +387,155 @@
       <module name="marcpy" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/playcorder/RecordingToXML.py" />
       <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="midi_listener" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/midi" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/midi/midi_listener.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="supercollider" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/supercollider" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/supercollider/supercollider.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="marcpy" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="py.test">
@@ -443,121 +562,26 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="tests" factoryName="Nosetests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="marcpy" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="marcpy" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Unittests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="marcpy" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Doctests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="marcpy" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Attests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="marcpy" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method />
-    </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.playcorder" />
-      <item index="1" class="java.lang.String" itemvalue="Python.test" />
-      <item index="2" class="java.lang.String" itemvalue="Python.MusicXMLExporter" />
-      <item index="3" class="java.lang.String" itemvalue="Python.utilities" />
-      <item index="4" class="java.lang.String" itemvalue="Python.RecordingToXML" />
+      <item index="1" class="java.lang.String" itemvalue="Python.MusicXMLExporter" />
+      <item index="2" class="java.lang.String" itemvalue="Python.RecordingToXML" />
+      <item index="3" class="java.lang.String" itemvalue="Python.midi_listener" />
+      <item index="4" class="java.lang.String" itemvalue="Python.supercollider" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.playcorder" />
-        <item index="1" class="java.lang.String" itemvalue="Python.RecordingToXML" />
-        <item index="2" class="java.lang.String" itemvalue="Python.utilities" />
-        <item index="3" class="java.lang.String" itemvalue="Python.MusicXMLExporter" />
-        <item index="4" class="java.lang.String" itemvalue="Python.test" />
+        <item index="0" class="java.lang.String" itemvalue="Python.supercollider" />
+        <item index="1" class="java.lang.String" itemvalue="Python.midi_listener" />
+        <item index="2" class="java.lang.String" itemvalue="Python.playcorder" />
+        <item index="3" class="java.lang.String" itemvalue="Python.RecordingToXML" />
+        <item index="4" class="java.lang.String" itemvalue="Python.MusicXMLExporter" />
       </list>
     </recent_temporary>
   </component>
-  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
   <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false" SSL_PROTOCOLS="sslv3">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
@@ -579,14 +603,22 @@
     <task active="true" id="Default" summary="Default task">
       <changelist id="1851a264-a5ae-475c-8539-056ca0223202" name="Default" comment="" />
       <created>1460011237298</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
       <updated>1460011237298</updated>
     </task>
     <task id="LOCAL-00001" summary="Reorganizing and cleaning up Playcorder">
       <created>1460013416328</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
       <updated>1460013416328</updated>
     </task>
     <task id="LOCAL-00002" summary="Reorganizing and cleaning up Playcorder">
       <created>1460015310516</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
       <updated>1460015310516</updated>
     </task>
     <option name="localTasksCounter" value="3" />
@@ -613,28 +645,49 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="5" y="23" width="1344" height="873" extended-state="0" />
+    <frame x="33" y="23" width="1344" height="873" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286908" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32980132" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847682" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18442933" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32847682" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31043592" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18442933" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980132" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32847682" sideWeight="0.50340134" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31043592" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32847682" sideWeight="0.49659863" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286908" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32847682" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
+    <layout-to-restore>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286908" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980132" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31043592" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32847682" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18442933" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32847682" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -645,361 +698,400 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="myTodoPanelSettings">
-      <TodoPanelSettings />
-    </option>
     <MESSAGE value="Reorganizing and cleaning up Playcorder" />
     <option name="LAST_COMMIT_MESSAGE" value="Reorganizing and cleaning up Playcorder" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="5" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/utilities.py</url>
+          <line>181</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="6" />
     </breakpoint-manager>
+    <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/utilities.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="129" column="0" selection-start="3692" selection-end="3771" vertical-scroll-proportion="0.0" vertical-offset="1935" max-vertical-offset="4980">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="955" column="0" selection-start="48842" selection-end="49222" vertical-scroll-proportion="0.0" vertical-offset="14325" max-vertical-offset="14940">
-          <folding>
-            <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8235#9194#0" expanded="false" />
-            <element signature="e#9473#11353#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/MusicXMLExporter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="0" selection-start="5142" selection-end="5142" vertical-scroll-proportion="0.0" vertical-offset="1662" max-vertical-offset="2355">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../music21/stream/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6804" column="0" selection-start="265278" selection-end="265278" vertical-scroll-proportion="0.0" vertical-offset="102060" max-vertical-offset="188820">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="180">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="495">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/supercollider/executable/Test.scd">
+    <entry file="file://$PROJECT_DIR$/supercollider/Test.scd">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="3" selection-start="476" selection-end="476" vertical-scroll-proportion="0.0" vertical-offset="1" max-vertical-offset="480">
+        <state relative-caret-position="0">
+          <caret line="26" column="3" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/supercollider/Test.scd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="26" column="3" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545" />
+        <state relative-caret-position="0">
+          <caret line="7" column="62" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/barlicity.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="439" column="0" selection-start="19260" selection-end="19260" vertical-scroll-proportion="0.0" vertical-offset="6585" max-vertical-offset="8160" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="231" column="51" selection-start="10578" selection-end="10578" vertical-scroll-proportion="0.0" vertical-offset="3240" max-vertical-offset="4710">
-          <folding>
-            <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8235#9194#0" expanded="false" />
-            <element signature="e#9473#11353#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="439" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utilities.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="218" column="0" selection-start="6074" selection-end="6074" vertical-scroll-proportion="0.0" vertical-offset="3270" max-vertical-offset="4575">
+        <state relative-caret-position="0">
+          <caret line="218" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="495">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="722" column="8" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530" />
+        <state relative-caret-position="0">
+          <caret line="28" column="29" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545" />
+        <state relative-caret-position="0">
+          <caret line="7" column="62" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/barlicity.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="537" column="0" selection-start="24043" selection-end="24043" vertical-scroll-proportion="0.0" vertical-offset="8055" max-vertical-offset="8190" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="185" column="34" selection-start="8116" selection-end="8116" vertical-scroll-proportion="0.0" vertical-offset="2775" max-vertical-offset="5835">
-          <folding>
-            <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8235#9194#0" expanded="false" />
-            <element signature="e#9473#11353#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="537" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="722" column="8" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530" />
+        <state relative-caret-position="0">
+          <caret line="28" column="29" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545" />
+        <state relative-caret-position="0">
+          <caret line="7" column="62" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/barlicity.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="539" column="39" selection-start="24125" selection-end="24125" vertical-scroll-proportion="0.0" vertical-offset="8085" max-vertical-offset="8175" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="222" column="80" selection-start="10204" selection-end="10204" vertical-scroll-proportion="0.0" vertical-offset="3330" max-vertical-offset="5775">
-          <folding>
-            <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8235#9194#0" expanded="false" />
-            <element signature="e#9473#11353#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="539" column="39" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10830" max-vertical-offset="15735">
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="722" column="8" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530" />
+        <state relative-caret-position="0">
+          <caret line="28" column="29" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545" />
+        <state relative-caret-position="0">
+          <caret line="7" column="62" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/barlicity.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="539" column="39" selection-start="24125" selection-end="24125" vertical-scroll-proportion="0.0" vertical-offset="8085" max-vertical-offset="8175" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="359" column="3" selection-start="16290" selection-end="16290" vertical-scroll-proportion="0.0" vertical-offset="5370" max-vertical-offset="5370">
-          <folding>
-            <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8235#9194#0" expanded="false" />
-            <element signature="e#9473#11353#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="539" column="39" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="4530" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="62" selection-start="147" selection-end="147" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="1545" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/barlicity.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="539" column="39" selection-start="24125" selection-end="24125" vertical-scroll-proportion="0.0" vertical-offset="8085" max-vertical-offset="8175" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="112" column="0" selection-start="4693" selection-end="4693" vertical-scroll-proportion="0.0" vertical-offset="1680" max-vertical-offset="3495">
-          <folding>
-            <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8235#9194#0" expanded="false" />
-            <element signature="e#9473#11353#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="28" column="29" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="0" selection-start="879" selection-end="879" vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="1545" />
+        <state relative-caret-position="0">
+          <caret line="7" column="62" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/barlicity.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="96" column="0" selection-start="2168" selection-end="2168" vertical-scroll-proportion="0.0" vertical-offset="1262" max-vertical-offset="7830" />
+        <state relative-caret-position="0">
+          <caret line="539" column="39" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="19" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/barlicity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="96" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../collections.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="287" column="4" selection-start="10047" selection-end="10047" vertical-scroll-proportion="9.366812" vertical-offset="0" max-vertical-offset="10605" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/supercollider/supercollider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="51" selection-start="179" selection-end="179" vertical-scroll-proportion="0.3488372" vertical-offset="0" max-vertical-offset="1740" />
+        <state relative-caret-position="0">
+          <caret line="287" column="4" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/playcorder_instruments.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="91" column="31" selection-start="5068" selection-end="5068" vertical-scroll-proportion="0.0" vertical-offset="1089" max-vertical-offset="1545" />
+        <state relative-caret-position="0">
+          <caret line="91" column="31" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="456" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="456" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/usefulimports/interval.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="31" selection-start="1351" selection-end="1368" vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="36660" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="480">
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="34" column="31" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/MidiFile.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="722" column="8" selection-start="27983" selection-end="27983" vertical-scroll-proportion="0.0" vertical-offset="10588" max-vertical-offset="15735">
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="722" column="8" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/localfluidsynth.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="29" selection-start="981" selection-end="992" vertical-scroll-proportion="0.0" vertical-offset="1" max-vertical-offset="4500" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="456">
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="28" column="29" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../music21/stream/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6804" column="0" selection-start="265278" selection-end="265278" vertical-scroll-proportion="0.0" vertical-offset="101185" max-vertical-offset="188205">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/supercollider/executable/Test.scd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="3" selection-start="476" selection-end="476" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="480">
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="6804" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../xml/etree/ElementTree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="475" column="32" selection-start="15993" selection-end="15993" vertical-scroll-proportion="0.0" vertical-offset="6936" max-vertical-offset="25065">
+        <state relative-caret-position="0">
+          <caret line="475" column="32" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm30/python_stubs/-665590330/__builtin__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="309" column="4" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/bob.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playcorder/RecordingToXML.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utilities.py">
+    <entry file="file://$PROJECT_DIR$/playcorder/MusicXMLExporter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="139" column="0" selection-start="3894" selection-end="3894" vertical-scroll-proportion="0.0" vertical-offset="1881" max-vertical-offset="4860">
+        <state relative-caret-position="6135">
+          <caret line="414" column="8" selection-start-line="414" selection-start-column="8" selection-end-line="414" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../mido/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/midi/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="1" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/midi/midi_listener.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="26" column="42" selection-start-line="26" selection-start-column="42" selection-end-line="26" selection-end-column="42" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playcorder/MeasuresBeatsNotes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="122" selection-end="122" vertical-scroll-proportion="-3.4615386" vertical-offset="0" max-vertical-offset="3135">
-          <folding>
-            <element signature="e#24#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/MusicXMLExporter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="407" column="30" selection-start="17043" selection-end="17043" vertical-scroll-proportion="-216.34616" vertical-offset="420" max-vertical-offset="6945">
+        <state relative-caret-position="210">
+          <caret line="20" column="66" selection-start-line="20" selection-start-column="66" selection-end-line="20" selection-end-column="66" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/playcorder.py">
+    <entry file="file://$PROJECT_DIR$/abjad_extensions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="19" selection-start="349" selection-end="349" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="5115">
-          <folding>
-            <element signature="e#24#54#0" expanded="true" />
-            <element signature="e#8235#9194#0" expanded="false" />
-            <element signature="e#9473#11353#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/playcorder/RecordingToXML.py">
+    <entry file="file://$PROJECT_DIR$/functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="0" selection-start="5633" selection-end="5633" vertical-scroll-proportion="4.1366906" vertical-offset="0" max-vertical-offset="6495">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/supercollider/executable/SCClassLibrary/Extensions/PyCom.sc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="38" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../OSC.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="1680" column="42" selection-start-line="1680" selection-start-column="42" selection-end-line="1680" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/supercollider/Test.scd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utilities.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/supercollider/README.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="39" selection-start-line="6" selection-start-column="39" selection-end-line="6" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/supercollider/supercollider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2115">
+          <caret line="141" column="35" selection-start-line="141" selection-start-column="35" selection-end-line="141" selection-end-column="35" />
           <folding>
-            <element signature="e#24#54#0" expanded="true" />
+            <element signature="e#24#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
   </component>
 </project>
-

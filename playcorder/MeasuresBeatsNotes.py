@@ -6,25 +6,76 @@ from marcpy import utilities, barlicity
 from copy import deepcopy
 
 
+
+empty_variant_dictionary = {
+    # gets converted to an element with the same name placed in the note articulations
+    # put any properties in parentheses
+    "articulations": [],
+    # gets converted to an element of the same name placed in the dynamics tag in the notations tag
+    # put any properties in parentheses
+    "dynamics": [],
+    # gets converted to an element of the same name placed in the notations element
+    # put any properties in parentheses
+    "notations": [],
+    # gets converted to the text of a "notehead" element placed in the note object
+    # put any properties in parentheses, e.g. "diamond(filled=no)"
+    "notehead": None,
+    # gets converted to a Text element that is placed before the note
+    # if properties need to be set, the annotation should be a tuple of (text, properties_dictionary)
+    "text_annotations": []
+}
+
+
+def standardize_variant_dictionary(variant_dictionary):
+    standardized_variant_dict = deepcopy(empty_variant_dictionary)
+    if variant_dictionary is not None:
+        assert isinstance(standardized_variant_dict, dict)
+        for key in standardized_variant_dict.keys():
+            if key.endswith("s"):
+                # it's a list key, like articulations
+                if key[:-1] in variant_dictionary:
+                    standardized_variant_dict[key].append(variant_dictionary[key[:-1]])
+                if key in variant_dictionary:
+                    standardized_variant_dict[key].extend(variant_dictionary[key])
+            else:
+                # it's a single value key, like "notehead"
+                if key in variant_dictionary:
+                    standardized_variant_dict[key] = variant_dictionary[key]
+    return standardized_variant_dict
+
+
 class MPNote:
-    def __init__(self, start_time, length, pitch, volume, variant=None, tie=None, notations=None, articulations=None):
+    def __init__(self, start_time, length, pitch, volume, variant=None, tie=None, notations=None, articulations=None,
+                 notehead=None, text_annotations=None):
         self.start_time = start_time
         self.length = length
         self.pitch = pitch
         self.volume = volume
-        self.variant = variant
+        self.variant = standardize_variant_dictionary(variant)
         self.tie = tie
         self.time_modification = None
+        # xml objects from variants
         self.notations = [] if notations is None else notations
         self.articulations = [] if articulations is None else articulations
+        self.notehead = notehead
+        self.text_annotations = [] if text_annotations is None else text_annotations
+        # used during processing
         self.length_without_tuplet = None
+        self.starts_tuplet = self.ends_tuplet = False
 
     def __repr__(self):
-        return "MPNote(start_time={}, length={}, pitch={}, volume={}, variant={}, tie={}, time_modification={}, " \
-               "notations={}, articulations={})".format(
-            self.start_time, self.length, self.pitch, self.volume, self.variant, self.tie,
-            self.time_modification, self.notations, self.articulations
+        # return "MPNote(start_time={}, length={}, pitch={}, volume={}, variant={}, tie={}, time_modification={}, " \
+        #        "notations={}, articulations={})".format(
+        #     self.start_time, self.length, self.pitch, self.volume, self.variant, self.tie,
+        #     self.time_modification, self.notations, self.articulations
+        # )
+        return "MPNote(start_time={}, length={}, pitch={})".format(
+            self.start_time, self.length, self.pitch
         )
+
+    @property
+    def end_time(self):
+        return self.start_time + self.length
 
     @staticmethod
     def length_to_undotted_constituents(length):

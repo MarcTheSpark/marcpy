@@ -1,5 +1,6 @@
 __author__ = 'mpevans'
 
+import math
 
 class Scale:
     def __init__(self, start_pitch, interval_series, repeat_interval):
@@ -14,7 +15,7 @@ class Scale:
         return the_pitch + self.repeat_interval * octaves_up + self.interval_series[note_of_scale]
 
     def round_pitch_to_scale(self, pitch):
-        which_octave = int((pitch - self.start_pitch) / self.repeat_interval)
+        which_octave = math.floor((pitch - self.start_pitch) / self.repeat_interval)
         remainder = (pitch - self.start_pitch) % self.repeat_interval
         dist = None
         winning_interval = None

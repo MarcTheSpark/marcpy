@@ -4,16 +4,16 @@ from fractions import Fraction
 
 import localfluidsynth
 from marcpy.chuck.chuck import *
-from marcpy.playcorder.MusicXMLExporter import *
-from marcpy import utilities
 from MidiFile import MIDIFile
-from marcpy.usefulimports.interval import IntervalSet
 from MeasuresBeatsNotes import *
 import RecordingToXML
+from threading import Event
 
-# TODO: fix voices!
-# TODO: add in staccato, tenuto as variants. Also add in text variants. Finally put in cent values as text variants
 
+# TODO: SOMETHING GOES WRONG WHEN THERE ARE LIKE 3 STAVES, and they get disconnected
+# TODO: SPECIFY MAX VOICES PER STAFF
+# TODO: SPECIFY MOST APPROPRIATE CLEF FOR EACH STAFF OF EACH MEASURE
+# TODO: DON'T SPLIT RESTS IN EMPTY VOICE INTO TUPLETS
 
 class Playcorder:
 
@@ -151,26 +151,30 @@ class Playcorder:
 
     # used for a situation where all parts are played from a single thread
     def wait(self, seconds):
+        time.sleep(seconds)
         if self.time_passed is not None:
             self.time_passed += seconds
-        time.sleep(seconds)
 
     # used for a situation where time is recorded manually, but there may be multiple threads,
     # only one of which registers time passed.
     def register_time_passed(self, seconds):
-        self.time_passed += seconds
+        if self.time_passed is not None:
+            self.time_passed += seconds
 
     # ---------------------------------------- SAVING TO XML ----------------------------------------------
 
     def save_to_xml_file(self, file_name, measure_schemes=None, time_signature="4/4", tempo=60, max_divisions=8,
-                         max_indigestibility=4, simplicity_preference=0.2, title=None, composer=None):
+                         max_indigestibility=4, simplicity_preference=0.2, title=None, composer=None,
+                         separate_voices_in_separate_staves=True, show_cent_values=True, add_sibelius_pitch_bend=True):
 
         part_recordings = [this_part.recording for this_part in self.parts_recorded]
         part_names = [this_part.name for this_part in self.parts_recorded]
         RecordingToXML.save_to_xml_file(part_recordings, part_names, file_name, measure_schemes=measure_schemes,
                                         time_signature=time_signature, tempo=tempo, max_divisions=max_divisions,
                                         max_indigestibility=max_indigestibility,
-                                        simplicity_preference=simplicity_preference, title=title, composer=composer)
+                                        simplicity_preference=simplicity_preference, title=title, composer=composer,
+                                        separate_voices_in_separate_staves=separate_voices_in_separate_staves,
+                                        show_cent_values=show_cent_values, add_sibelius_pitch_bend=add_sibelius_pitch_bend)
 
 
     # ---------------------------------------- SAVING TO MIDI ----------------------------------------------
@@ -214,13 +218,13 @@ class Playcorder:
             beat_scheme = BeatQuantizationScheme(tempo, beat_length, max_beat_divisions, max_indigestibility) \
                 if quantization_divisions is None \
                 else BeatQuantizationScheme(tempo, beat_length, quantization_divisions=quantization_divisions)
-            parts = [Playcorder._separate_into_non_overlapping_voices(
-                Playcorder._quantize_recording(
+            parts = [RecordingToXML.separate_into_non_overlapping_voices(
+                RecordingToXML.quantize_recording(
                     part.recording, [beat_scheme])[0],
                 beat_max_overlap
             ) for part in self.parts_recorded]
         else:
-            parts = [Playcorder._separate_into_non_overlapping_voices(
+            parts = [RecordingToXML.separate_into_non_overlapping_voices(
                 part.recording, beat_max_overlap
             ) for part in self.parts_recorded]
 
@@ -279,6 +283,7 @@ class PlaycorderInstrument:
     def play_note(self, pitch, volume, length, start_delay=0, variant_dictionary=None, play_length=None):
         thread.start_new_thread(self._do_play_note, (pitch, volume, length if play_length is None else play_length,
                                                      start_delay, variant_dictionary))
+
         # record the note in the hosting playcorder, if it's recording
         if self.host_playcorder and self.host_playcorder.get_time_passed() is not None:
             self.host_playcorder.record_note(self, pitch, volume, length,
@@ -377,23 +382,19 @@ class MidiPlaycorderInstrument(PlaycorderInstrument):
 
 # -------------- EXAMPLE --------------
 
-pc = Playcorder(soundfont_path="default")
-piano = pc.add_midi_part(0, "Piano")
-guitar = pc.add_midi_part((0, 27), "Guitar")
-
-pc.start_recording([piano])
-
-notes = [67, 45, 67, 56, 78, 67, 56, 45, 56, 67]
-for note in notes:
-    piano.play_note(note, 0.5, 1.0)
-    time.sleep(0.75)
+# pc = Playcorder(soundfont_path="default")
+#
+# piano = pc.add_midi_part((0, 0), "Piano")
+# guitar = pc.add_midi_part((0, 27), "Guitar")
+#
+# pc.start_recording([piano, guitar], manual_time=True)
+#
 # import random
 # for i in range(15):
-#     l = random.random()*0.5+0.1
+#     l = random.random()*1.5+0.1
 #     random.choice([piano, guitar]).play_note(50 + random.random()*20, 0.5, l)
-#     time.sleep(random.random()*0.5)
-
-pc.stop_recording()
-pc.save_to_xml_file(file_name="bob.xml", measure_schemes=[MeasureScheme.from_time_signature("3/4", 120, max_divisions=6),
-                                                          MeasureScheme.from_time_signature("9/8", 120, max_divisions=9),
-                                                          MeasureScheme.from_time_signature("2/4", 400, max_divisions=6)])
+#     pc.wait(l+random.random()*1.5)
+#
+# pc.stop_recording()
+#
+# pc.save_to_xml_file(file_name="bob.xml", time_signature="5/4", tempo=120, max_divisions=6)

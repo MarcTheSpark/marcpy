@@ -5,18 +5,23 @@ from MeasuresBeatsNotes import *
 from marcpy.usefulimports.interval import IntervalSet
 from copy import deepcopy
 from collections import defaultdict
+from marcpy import barlicity
 
-# how various notations split when we divide a note up
-how_they_split = defaultdict(lambda: "all", {
-    "Tuplet(start)": "first",
-    "Tuplet(end)": "end"
-})
+
+notation_locations = {
+    # any notation without an entry is assumed to be distributed to all tied noteheads
+    "staccato": "end",
+    "tenuto": "end",
+    "accent": "start",
+}
 
 
 def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None, time_signature="4/4", tempo=60, max_divisions=8,
-                     max_indigestibility=4, simplicity_preference=0.2, title=None, composer=None):
+                     max_indigestibility=4, simplicity_preference=0.2, title=None, composer=None,
+                     separate_voices_in_separate_staves=True, show_cent_values=True, add_sibelius_pitch_bend=True):
 
     print "Saving Output..."
+    print recorded_parts
 
     # get measure schemes from time signature if not supplied
     if measure_schemes is None:
@@ -34,7 +39,7 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
 
     # keep repeating the last measure_scheme until we get to the end of the recording
     total_measure_schemes_length = sum(ms.length for ms in measure_schemes)
-    while total_measure_schemes_length < total_quarters_length:
+    while total_measure_schemes_length <= total_quarters_length:
         measure_schemes.append(deepcopy(measure_schemes[-1]))
         beat_schemes.extend(measure_schemes[-1].beat_quantization_schemes)
         total_measure_schemes_length += measure_schemes[-1].length
@@ -55,20 +60,15 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
         xml_part = Part(part_name)
 
         # quantize the recording, also noting the beat divisors
-        quantized_recording, beat_divisors = _quantize_recording(part_recording, beat_schemes)
+        quantized_recording, beat_divisors = quantize_recording(part_recording, beat_schemes)
 
         # merge notes into chords
         quantized_recording = _collapse_recording_chords(quantized_recording)
         # separate it into non-overlapping voices
-        quantized_separated_voices = _separate_into_non_overlapping_voices(quantized_recording, 0.001)
+        quantized_separated_voices = separate_into_non_overlapping_voices(quantized_recording, 0.001)
         # clean up pc_voices: add rests, break into ties, etc.
-        clean_pc_voices = [_raw_voice_to_pretty_looking_voice(v, beat_schemes)
-                           for v in quantized_separated_voices]
-
-        for v in clean_pc_voices:
-            # this method modifies in place
-            _set_tuplets_for_notes_in_voice(v, beat_schemes, beat_divisors)
-            _break_notes_into_undotted_constituents(v, beat_schemes)
+        clean_pc_voices = [_process_voice(v, beat_schemes, beat_divisors) for v in quantized_separated_voices]
+        num_voices_this_part = len(clean_pc_voices)
 
         # create xml measure objects with time signatures and add to the part
         last_time_signature = None
@@ -78,10 +78,23 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
             measure_start, measure_time_signature = measure_scheme.start_time, measure_scheme.tuple_time_signature
             measure_end = measure_scheme.end_time
 
+            # now we add the notes to the measure
+            # first group notes into the voices in the measure
+            voices_in_measure = []
+            for voice in clean_pc_voices:
+                voice_in_measure = [pc_note for pc_note in voice
+                                    if measure_start <= pc_note.start_time < measure_end]
+                # make sure one of them is not a rest
+                if len([n for n in voice_in_measure if n.pitch is not None]) > 0:
+                    voices_in_measure.append(voice_in_measure)
+            voices_in_measure.sort(key=lambda x: get_average_pitch(x), reverse=True)
+
             # make a xml measure with the appropriate time signature
             clef = "treble" if measure_num == 1 else None
             time_signature = measure_time_signature if measure_time_signature != last_time_signature else None
-            xml_measure = Measure(number=measure_num, clef=clef, time_signature=time_signature)
+            num_staves = num_voices_this_part if separate_voices_in_separate_staves else 1
+            xml_measure = Measure(number=measure_num, clef=clef, time_signature=time_signature,
+                                  staves=num_staves)
             last_time_signature = measure_time_signature
 
             # add the measure to the part, and increment measure_num
@@ -96,16 +109,6 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
                     last_tempo = beat_scheme.tempo
                 offset += beat_scheme.beat_length
 
-            # now we add the notes to the measure
-            # first group notes into the voices in the measure
-            voices_in_measure = []
-            for voice in clean_pc_voices:
-                voice_in_measure = [pc_note for pc_note in voice
-                                    if measure_start <= pc_note.start_time < measure_end]
-                # make sure one of them is not a rest
-                if len([n for n in voice_in_measure if n.pitch is not None]) > 0:
-                    voices_in_measure.append(voice_in_measure)
-
             # populate the xml measure object with xml notes
             if len(voices_in_measure) == 0:
                 # if the measure's empty, add a bar rest
@@ -113,44 +116,145 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
             else:
                 # otherwise go through each voice present in the measure
                 for which_voice, voice_in_measure in enumerate(voices_in_measure):
+                    if which_voice != 0:
+                        # not the first voice; we need to rewind to the start of the measure
+                        xml_measure.append(Backup(measure_scheme.length))
+
                     # each note in each voice
                     for pc_note in voice_in_measure:
                         assert isinstance(pc_note, MPNote)
 
                         # and each length component in each note
                         for component_num, length_component in enumerate(pc_note.length_without_tuplet):
+                            component_notations = []
+                            component_articulations = []
+                            component_text_annotations = []
+                            do_text = False
+
+                            # Tuplets and Ties
                             if component_num == 0 and component_num == len(pc_note.length_without_tuplet) - 1:
-                                # only one component, so tie type is just whatever the pc_note is
-                                ties = pc_note.tie
-                                component_notations = pc_note.notations
-                                component_articulations = pc_note.notations
+                                # this is the first and last component, i.e. there is only one component,
+                                # so tie type is just whatever the pc_note is
+                                component_ties = pc_note.tie
+                                # and we are free to express either a start or an end tuplet notation
+                                if pc_note.starts_tuplet:
+                                    component_notations.append(Tuplet("start"))
+                                if pc_note.ends_tuplet:
+                                    component_notations.append(Tuplet("end"))
                             elif component_num == 0:
                                 # multiple components, of which this is the first
-                                ties = "continue" if pc_note.tie == "end" or pc_note.tie == "continue" else "start"
-                                component_notations = [n for n in pc_note.notations if
-                                                       how_they_split[str(n)] in "start or all"]
-                                component_articulations = [a for a in pc_note.articulations if
-                                                           how_they_split[str(a)] in "start or all"]
+                                component_ties = "continue" \
+                                    if pc_note.tie == "stop" or pc_note.tie == "continue" else "start"
+                                # since we have split pc_notes at the beats, this cannot end a tuplet bracket
+                                # it can, however have a start tuplet bracket
+                                if pc_note.starts_tuplet:
+                                    component_notations.append(Tuplet("start"))
                             elif component_num == len(pc_note.length_without_tuplet) - 1:
                                 # multiple components, of which this is the last
-                                ties = "continue" if pc_note.tie == "start" or pc_note.tie == "continue" else "end"
-                                component_notations = [n for n in pc_note.notations if
-                                                       how_they_split[str(n)] in "end or all"]
-                                component_articulations = [a for a in pc_note.articulations if
-                                                           how_they_split[str(a)] in "end or all"]
+                                component_ties = "continue" \
+                                    if pc_note.tie == "start" or pc_note.tie == "continue" else "stop"
+                                # similarly to above...
+                                if pc_note.ends_tuplet:
+                                    component_notations.append(Tuplet("end"))
                             else:
-                                ties = "continue"
-                                component_notations = [n for n in pc_note.notations if
-                                                       how_they_split[str(n)] == "all"]
-                                component_articulations = [a for a in pc_note.articulations if
-                                                           how_they_split[str(a)] == "all"]
+                                component_ties = "continue"
+                                # Note that a middle component will never start or end a tuplet bracket
 
-                            xml_measure.append(Note(
-                                None if pc_note.pitch is None else Pitch(pc_note.pitch),
-                                duration=Duration(length_component, pc_note.time_modification),
-                                voice=which_voice+1, notations=component_notations, articulations=component_articulations,
-                                ties=ties)
-                            )
+                            if component_ties is None:
+                                # this is a note represented by a single notehead, so all notations/articulations apply
+                                component_notations.extend(pc_note.notations)
+                                component_articulations.extend(pc_note.articulations)
+                                do_text = True
+                            elif component_ties == "start":
+                                # this is the beginning of a note with multiple tied noteheads
+                                component_notations.extend([notation for notation in pc_note.notations
+                                                            if notation.tag not in notation_locations or
+                                                            notation_locations[notation.tag] == "start"])
+                                component_articulations.extend([articulation for articulation in pc_note.articulations
+                                                                if articulation.tag not in notation_locations or
+                                                                notation_locations[articulation.tag] == "start"])
+                                do_text = True
+                            elif component_ties == "stop":
+                                # this is the end of a note with multiple tied noteheads
+                                component_notations.extend([notation for notation in pc_note.notations
+                                                            if notation.tag not in notation_locations or
+                                                            notation_locations[notation.tag] == "end"])
+                                component_articulations.extend([articulation for articulation in pc_note.articulations
+                                                                if articulation.tag not in notation_locations or
+                                                                notation_locations[articulation.tag] == "end"])
+                            else:
+                                # this is the middle of a note with multiple tied noteheads
+                                component_notations.extend([notation for notation in pc_note.notations
+                                                            if notation.tag not in notation_locations])
+                                component_articulations.extend([articulation for articulation in pc_note.articulations
+                                                                if articulation.tag not in notation_locations])
+
+                            if isinstance(pc_note.pitch, (list, tuple)):
+                                # it's a chord
+                                xml_notes = Note.make_chord(
+                                    pc_note.pitch,
+                                    duration=Duration(length_component, pc_note.time_modification),
+                                    voice=which_voice+1, staff=(which_voice+1) if separate_voices_in_separate_staves else 1,
+                                    notations=component_notations, articulations=component_articulations,
+                                    ties=component_ties, notehead=pc_note.notehead
+                                )
+                            else:
+                                xml_notes = [Note(
+                                    None if pc_note.pitch is None else Pitch(pc_note.pitch),
+                                    duration=Duration(length_component, pc_note.time_modification),
+                                    voice=which_voice+1, staff=(which_voice+1) if separate_voices_in_separate_staves else 1,
+                                    notations=component_notations, articulations=component_articulations,
+                                    ties=component_ties, notehead=pc_note.notehead
+                                )]
+
+                            if do_text:
+                                component_text_annotations.extend(pc_note.text_annotations)
+                                if show_cent_values and pc_note.pitch is not None:
+                                    micro_tone_deviations = []
+                                    for m, a_pitch in enumerate(utilities.make_flat_list([pc_note.pitch])):
+                                        if a_pitch != int(a_pitch):
+                                            micro_tone_deviations.append(str(round(a_pitch, 2)))
+                                    if len(micro_tone_deviations) > 0:
+                                        component_text_annotations.append(Text(
+                                            ", ".join(micro_tone_deviations),
+                                            staff=1 if separate_voices_in_separate_staves else which_voice+1,
+                                            voice=which_voice+1,
+                                        ))
+                                if add_sibelius_pitch_bend and pc_note.pitch is not None \
+                                        and not isinstance(pc_note.pitch, (list, tuple)):
+                                    # single microtonal pitch; notate pitch bend
+                                    xml_note = xml_notes[0]
+                                    assert isinstance(xml_note, Note)
+                                    component_text_annotations.append(Text(
+                                        get_pitch_bend_text(pc_note.pitch - xml_note.pitch.rounded_pitch),
+                                        staff=1 if separate_voices_in_separate_staves else which_voice+1,
+                                        voice=which_voice+1,
+                                    ))
+
+                            # before adding the note itself, we add any text annotations
+                            for text_annotation in component_text_annotations:
+                                assert isinstance(text_annotation, Text)
+                                text_annotation.set_staff(1 if separate_voices_in_separate_staves else which_voice+1)
+                                text_annotation.set_voice(which_voice+1)
+                                xml_measure.append(text_annotation)
+
+                            # we need to figure out which notations need to be expressed, since some only happen
+                            # on the start or end of a note.
+                            # if component_num == 0 and pc_note.tie == "start":
+                            #     part_of_note = "start"
+                            # elif component_num == len(pc_note.length_without_tuplet) - 1 and pc_note.tie == "end":
+                            #     part_of_note = "end"
+                            # else:
+                            #     part_of_note = "mid"
+                            # for articulations, check the tag and consult a dictionary
+                            # for notations check the tag and consult a dictionary
+                            # always do noteheads
+                            # for text annotations, only do start
+                            # for dynamics, only do start
+                            # don't even include tuplets in the notations! handle separately
+
+                            for xml_note in xml_notes:
+                                xml_measure.append(xml_note)
         xml_score.add_part(xml_part)
     xml_score.save_to_file(file_name)
 
@@ -159,7 +263,7 @@ def save_to_xml_file(recorded_parts, part_names, file_name, measure_schemes=None
 
 def _get_recording_quarters_length(recorded_parts, beat_schemes):
     # returns the length in seconds, and then the length in quarters, taking into account the tempos of the beats
-    length = max([max([pc_note.start_time + pc_note.length for pc_note in part])
+    length = max([max([pc_note.start_time + pc_note.length for pc_note in part] + [0])
                   for part in recorded_parts])
     quarter_length = 0
     current_beat = 0
@@ -176,7 +280,7 @@ def _get_recording_quarters_length(recorded_parts, beat_schemes):
 # [ ------- Part Processing ------- ]
 
 
-def _quantize_recording(recording_in_seconds, beat_schemes, onset_termination_weighting=0.3):
+def quantize_recording(recording_in_seconds, beat_schemes, onset_termination_weighting=0.3):
 
     """
 
@@ -299,7 +403,7 @@ def _collapse_recording_chords(recording):
     return out
 
 
-def _separate_into_non_overlapping_voices(recording, max_overlap):
+def separate_into_non_overlapping_voices(recording, max_overlap):
     # takes a recording of MPNotes and breaks it up into separate voices that don't overlap more than max_overlap
     assert isinstance(recording, list)
     recording.sort(key=lambda note: note.start_time)
@@ -322,9 +426,13 @@ def _separate_into_non_overlapping_voices(recording, max_overlap):
 # [ ------- Voice Pre-Processing ------- ]
 
 
-def _raw_voice_to_pretty_looking_voice(pc_voice, beat_schemes):
+def _process_voice(pc_voice, beat_schemes, beat_divisors):
     pc_voice = _add_rests(pc_voice, beat_schemes)
     pc_voice = _break_into_ties(pc_voice, beat_schemes)
+    # the following modify the voice in place (mostly because they iterate through the notes)
+    _convert_variants_to_notations_in_voice(pc_voice)
+    _set_tuplets_for_notes_in_voice(pc_voice, beat_schemes, beat_divisors)
+    _break_notes_into_undotted_constituents(pc_voice, beat_schemes, beat_divisors)
     return pc_voice
 
 
@@ -410,9 +518,9 @@ def _set_tuplets_for_notes_in_voice(voice, beat_schemes, beat_divisors):
                 this_note.time_modification = tuplet_type
                 this_note.length_without_tuplet = this_note.length * float(tuplet_type[0]) / tuplet_type[1]
                 if this_note.start_time == beat_scheme.start_time:
-                    this_note.notations.append(Tuplet("start"))
-                if this_note.start_time + this_note.length == beat_scheme.end_time:
-                    this_note.notations.append(Tuplet("end"))
+                    this_note.starts_tuplet = True
+                if this_note.end_time == beat_scheme.end_time:
+                    this_note.ends_tuplet = True
             else:
                 this_note.length_without_tuplet = this_note.length
 
@@ -423,6 +531,92 @@ def _set_tuplets_for_notes_in_voice(voice, beat_schemes, beat_divisors):
         remaining_rest.length_without_tuplet = remaining_rest.length
 
 
-def _break_notes_into_undotted_constituents(voice, beat_schemes):
+def _convert_variants_to_notations_in_voice(voice):
+    for note in voice:
+        _convert_note_variant_to_notations(note)
+
+
+def _convert_note_variant_to_notations(note):
+    assert isinstance(note, MPNote)
+    for articulation in note.variant["articulations"]:
+        note.articulations.append(ET.Element(articulation))
+    for dynamic in note.variant["dynamics"]:
+        dynamic_el = ET.Element("dynamic")
+        ET.SubElement(dynamic_el, dynamic)
+        note.notations.append(dynamic_el)
+    for notation in note.variant["notations"]:
+        element_name, element_dict = string_to_element_name_and_dict(notation)
+        note.notations.append(ET.Element(element_name, element_dict))
+    if note.variant["notehead"] is not None:
+        element_name, element_dict = string_to_element_name_and_dict(note.variant["notehead"])
+        note.notehead = ET.Element("notehead", element_dict)
+        note.notehead.text = element_name
+    for text_annotation in note.variant["text_annotations"]:
+        if isinstance(text_annotation, (tuple, list)):
+            element_name, element_dict = text_annotation
+        else:
+            element_name, element_dict = text_annotation, {}
+        note.text_annotations.append(Text(element_name, **element_dict))
+
+
+def string_to_element_name_and_dict(element_string):
+    assert isinstance(element_string, str)
+    element_name = element_string.split("(")[0]
+    pieces = re.split('\(|\)|, ', element_string)
+    element_dict = {}
+    for piece in pieces[1:]:
+        if "=" in piece:
+            key_and_value = piece.split("=")
+            element_dict[key_and_value[0]] = key_and_value[1]
+    return element_name, element_dict
+
+
+def _break_notes_into_undotted_constituents(voice, beat_schemes, beat_divisors):
     for pc_note in voice:
         pc_note.length_without_tuplet = MPNote.length_to_undotted_constituents(pc_note.length_without_tuplet)
+    # make a multiplicative "meter" and generate indispensabilities for each beat division
+    for beat_scheme, divisor in zip(beat_schemes, beat_divisors):
+        if divisor is None:
+            continue
+        beat_indispensabilities = barlicity.get_indispensability_array(
+            _get_multiplicative_beat_meter(beat_scheme.beat_length, divisor), normalize=True
+        )
+
+        notes_in_beat = [pc_note for pc_note in voice
+                         if beat_scheme.start_time <= pc_note.start_time < beat_scheme.end_time]
+
+
+def _get_multiplicative_beat_meter(beat_length, beat_divisor):
+    # a beat of length 1.5 = 3/2 prefers to divide into 3 first
+    natural_division = Fraction(beat_length).limit_denominator().numerator
+    prime_decomposition = barlicity.prime_factor(beat_divisor)
+    prime_decomposition.sort()
+    for preferred_factor in sorted(barlicity.prime_factor(natural_division), reverse=True):
+        prime_decomposition.insert(0, prime_decomposition.pop(prime_decomposition.index(preferred_factor)))
+    return prime_decomposition
+
+
+def get_average_pitch(notes_list):
+    total_pitch = 0.0
+    num_notes = 0
+    for pc_note in notes_list:
+        if pc_note.pitch is not None:
+            # not a rest
+            if isinstance(pc_note.pitch, (tuple, list)):
+                # a chord
+                total_pitch += float(sum(pc_note.pitch)) / len(pc_note.pitch)
+            else:
+                total_pitch += pc_note.pitch
+            num_notes += 1
+    return total_pitch / num_notes
+
+
+def get_most_appropriate_clef(notes_list):
+    if get_average_pitch(notes_list) > 60:
+        return "treble"
+    else:
+        return "bass"
+
+def get_pitch_bend_text(deviation_in_dollars):
+    # where dollars = cents/100
+    return "~B0,{}".format(int(round(deviation_in_dollars*32)) + 64)

@@ -6,6 +6,7 @@ import math
 from datetime import date
 import numbers
 import random
+import re
 
 #  -------------------------------------------------- GLOBALS ----------------------------------------------------- #
 
@@ -38,20 +39,21 @@ def get_pitch_step_alter_and_octave(pitch, accidental_preference="standard"):
     else:
         rounded_pitch = round(pitch)
         step, alteration = pc_number_to_step_and_standard_alteration[rounded_pitch % 12]
-    octave = int(pitch/12) - 1
+    octave = int(rounded_pitch/12) - 1
 
     # if a quarter-tone, adjust the accidental
     if pitch != rounded_pitch:
         alteration += pitch - rounded_pitch
         alteration = round(alteration, ndigits=3)
-    return step, alteration, octave
+    return step, alteration, octave, rounded_pitch
 
 
 class Pitch(ET.Element):
 
     def __init__(self, midi_val, accidental_preference="standard"):
         super(Pitch, self).__init__("pitch")
-        self.step, self.alter, self.octave = get_pitch_step_alter_and_octave(midi_val, accidental_preference=accidental_preference)
+        self.step, self.alter, self.octave, self.rounded_pitch = \
+            get_pitch_step_alter_and_octave(midi_val, accidental_preference=accidental_preference)
         step_el = ET.Element("step")
         step_el.text = self.step
         alter_el = ET.Element("alter")
@@ -88,7 +90,8 @@ class Duration:
         # The tuplet ratio can also include the normal type, e.g. (4, 3, 0.5) for 4 in the space of 3 eighths
         self.actual_length = float(length_without_tuplet)
         if tuplet is not None:
-            self.actual_length *= tuplet[1] / tuplet[0]
+            self.actual_length *= float(tuplet[1]) / tuplet[0]
+
         if length_without_tuplet in length_to_note_type:
             self.type = length_to_note_type[length_without_tuplet]
             self.dots = 0
@@ -135,7 +138,7 @@ class Note(ET.Element):
     # to build a chord include several Notes, and set is_chord_member to True on all but the first
 
     def __init__(self, pitch, duration, ties=None, notations=(), articulations=(),
-                 is_chord_member=False, voice=None):
+                 notehead=None, is_chord_member=False, voice=None, staff=None):
         super(Note, self).__init__("note")
 
         if pitch == "bar rest":
@@ -160,9 +163,12 @@ class Note(ET.Element):
             self.append(ET.Element("rest"))
         else:
             assert isinstance(pitch, Pitch)
+            self.pitch = pitch
             self.append(pitch)
         duration_el = ET.Element("duration")
         duration_el.text = str(int(round(duration.actual_length * num_beat_divisions)))
+        if duration_el.text == "0":
+            print duration.actual_length, num_beat_divisions
         self.append(duration_el)
 
         if is_chord_member:
@@ -172,6 +178,11 @@ class Note(ET.Element):
             voice_el = ET.Element("voice")
             voice_el.text = str(voice)
             self.append(voice_el)
+
+        if staff is not None:
+            staff_el = ET.Element("staff")
+            staff_el.text = str(staff)
+            self.append(staff_el)
 
         if ties is not None:
             if ties.lower() == "start" or ties.lower() == "continue":
@@ -186,6 +197,9 @@ class Note(ET.Element):
         self.append(type_el)
         for _ in range(duration.dots):
             self.append(ET.Element("dot"))
+
+        if notehead is not None:
+            self.append(notehead)
 
         if duration.time_modification is not None:
             self.append(duration.time_modification)
@@ -208,18 +222,19 @@ class Note(ET.Element):
             self.append(notations_el)
 
     @classmethod
-    def make_chord(cls, pitches, duration, ties=None, notations=(), articulations=(), voice=None):
+    def make_chord(cls, pitches, duration, ties=None, notations=(), articulations=(),
+                   notehead=None, is_chord_member=False, voice=None, staff=None):
         out = []
         chord_switch = False
         for pitch in pitches:
-            out.append(cls(pitch, duration, ties=ties, notations=notations, articulations=articulations,
-                           is_chord_member=chord_switch, voice=voice))
+            out.append(cls(Pitch(pitch), duration, ties=ties, notations=notations, articulations=articulations,
+                           is_chord_member=chord_switch, notehead=None, voice=None, staff=None))
             chord_switch = True
         return out
 
     @classmethod
-    def bar_rest(cls, duration_of_bar):
-        return cls("bar rest", duration_of_bar)
+    def bar_rest(cls, duration_of_bar, staff=None, voice=None):
+        return cls("bar rest", duration_of_bar, staff=staff, voice=voice)
 
 #  -------------------------------------------------- MEASURE ------------------------------------------------------ #
 
@@ -238,7 +253,7 @@ barline_name_to_xml_name = {
 
 class Measure(ET.Element):
 
-    def __init__(self, number, time_signature=None, clef=None, barline=None):
+    def __init__(self, number, time_signature=None, clef=None, barline=None, staves=None):
         super(Measure, self).__init__("measure", {"number": str(number)})
 
         self.has_barline = False
@@ -266,6 +281,10 @@ class Measure(ET.Element):
             ET.SubElement(clef_el, "line").text = str(clef[1])
             if len(clef) > 2:
                 ET.SubElement(clef_el, "clef-octave-change").text = str(clef[2])
+
+        if staves is not None:
+            staves_el = ET.SubElement(attributes_el, "staves")
+            staves_el.text = str(staves)
 
         if barline is not None:
             barline_el = ET.Element("barline", {"location": "right"})
@@ -390,6 +409,37 @@ class MetronomeMark(ET.Element):
         staff_el = ET.Element("staff")
         staff_el.text = str(staff)
         self.append(staff_el)
+
+
+class Text(ET.Element):
+    def __init__(self, text, voice=1, staff=1, **kwargs):
+        super(Text, self).__init__("direction")
+        type_el = ET.Element("direction-type")
+        self.append(type_el)
+        words_el = ET.Element("words", kwargs)
+        words_el.text = text
+        type_el.append(words_el)
+        self.voice_el = ET.Element("voice")
+        self.voice_el.text = str(voice)
+        self.staff_el = ET.Element("staff")
+        self.staff_el.text = str(staff)
+        self.append(self.voice_el)
+        self.append(self.staff_el)
+
+    def set_voice(self, voice):
+        self.voice_el.text = str(voice)
+
+    def set_staff(self, staff):
+        self.staff_el.text = str(staff)
+
+
+class Backup(ET.Element):
+
+    def __init__(self, quarters_length):
+        super(Backup, self).__init__("backup")
+        duration_el = ET.Element("duration")
+        self.append(duration_el)
+        duration_el.text = str(num_beat_divisions * quarters_length)
 
 
 #  --------------------------------------------------- EXAMPLE ----------------------------------------------------- #

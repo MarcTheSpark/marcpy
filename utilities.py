@@ -33,8 +33,6 @@ def save_answers(func):
 def get_relative_file_path(file_name):
     if getattr(sys, 'frozen', False):
         application_path = os.path.join(os.path.dirname(sys.executable), "..")
-        # application_path = os.path.dirname(sys.executable)
-        # application_path = os.path.join(os.path.abspath(os.path.join(application_path, "..")), "Resources")
     else:
         frm = inspect.stack()[1]
         mod = inspect.getmodule(frm[0])
@@ -226,7 +224,10 @@ def make_flat_list(l, indivisible_type=None):
     return new_list
 
 
-def get_interpolated_array_value(array, index, power=1, cyclic=False):
+def get_interpolated_array_value(array, index, power=1, cyclic=False, normalized=False):
+    if normalized:
+        index *= len(array)
+        index = round(index, 10)
     # some special cases
     if index < 0:
         if cyclic:
