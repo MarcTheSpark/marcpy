@@ -8,9 +8,9 @@ import atexit
 import time
 import thread
 import os
-from marcpy.utilities import get_relative_file_path
 from threading import Event
 
+get_relative_file_path = os.path.realpath
 
 _supercollider_process = None
 _supercollider_listener = None
@@ -122,24 +122,24 @@ def add_sc_listener(tag_to_respond_to, response_function):
 
 
 # # ---------------------------------------- A SIMPLE EXAMPLE ---------------------------------------------
-# # start supercollider and wait until it's booted (since hold_until_booted is True)
-# # then the callback function runs the file "Test.scd"
-#
-# start_supercollider(callback_when_ready=lambda: run_file(os.path.realpath("Test.scd")), hold_until_booted=True)
-#
-#
-# # set up a responder to handle messages coming from supercollider; this is likely unnecessary a lot of the time
-# def talk_back_responder(addr, tags, stuff, source):
-#     print "Supercollider says \"{}\"".format(stuff[0])
-#
-# add_sc_listener("/chatter", talk_back_responder)
-#
-# # wait five seconds while we listen to the initial state of the synth
-# time.sleep(5)
-#
-# # set the frequency of the left-right wobble in the synth to 20Hz
-# # also, the supercollider file is set up to send back a message in response
-# send_sc_message("setWobbleFrequency", [20])
-#
-# # listen for 5 seconds
-# time.sleep(5)
+# start supercollider and wait until it's booted (since hold_until_booted is True)
+# then the callback function runs the file "Test.scd"
+
+start_supercollider(callback_when_ready=lambda: run_file(get_relative_file_path("Test.scd")), hold_until_booted=True)
+
+
+# set up a responder to handle messages coming from supercollider; this is likely unnecessary a lot of the time
+def talk_back_responder(addr, tags, stuff, source):
+    print "Supercollider says \"{}\"".format(stuff[0])
+
+add_sc_listener("/chatter", talk_back_responder)
+
+# wait five seconds while we listen to the initial state of the synth
+time.sleep(5)
+
+# set the frequency of the left-right wobble in the synth to 20Hz
+# also, the supercollider file is set up to send back a message in response
+send_sc_message("setWobbleFrequency", [20])
+
+# listen for 5 seconds
+time.sleep(5)
