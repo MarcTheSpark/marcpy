@@ -9,6 +9,7 @@ import time
 import thread
 import os
 from marcpy.utilities import get_relative_file_path
+from threading import Event
 
 
 _supercollider_process = None
@@ -57,7 +58,7 @@ def kill_supercollider():
 atexit.register(kill_supercollider)
 
 
-def start_supercollider(callback_when_ready=None):
+def start_supercollider(callback_when_ready=None, hold_until_booted=False):
     if not is_running():
         global _supercollider_process, _supercollider_listener, \
             executable_path, sc_directory, sc_file_runner_path
@@ -66,6 +67,8 @@ def start_supercollider(callback_when_ready=None):
         _supercollider_listener = OSC.OSCServer(('127.0.0.1', port))
         _supercollider_listener.addDefaultHandlers()
 
+        boot_done_event = Event()
+
         def sc_port_received(addr, tags, stuff, source):
             global _py_to_supercollider_client
             print "SuperCollider started and listening on port", stuff[0]
@@ -73,11 +76,15 @@ def start_supercollider(callback_when_ready=None):
             _py_to_supercollider_client.connect(( '127.0.0.1', stuff[0] ))
             if callback_when_ready is not None:
                 callback_when_ready()
+            boot_done_event.set()
 
         _supercollider_listener.addMsgHandler("/sendPort", sc_port_received)
         thread.start_new_thread(_supercollider_listener.serve_forever, ())
 
         _supercollider_process = subprocess.Popen([executable_path, "-d", sc_directory, sc_file_runner_path, str(port)])
+
+        if hold_until_booted:
+            boot_done_event.wait()
     else:
         print "Tried to start supercollider, but it was already running"
 
@@ -106,4 +113,33 @@ def send_sc_message(address, data):
         the_msg.append(datum)
     _py_to_supercollider_client.send(the_msg)
 
-# start_supercollider(callback_when_ready=lambda: run_file(get_relative_file_path("executable/Test.scd")))
+
+def add_sc_listener(tag_to_respond_to, response_function):
+    if is_running():
+        _supercollider_listener.addMsgHandler(tag_to_respond_to, response_function)
+    else:
+        raise Exception("Supercollider not started yet, so can't listen!")
+
+
+# # ---------------------------------------- A SIMPLE EXAMPLE ---------------------------------------------
+# # start supercollider and wait until it's booted (since hold_until_booted is True)
+# # then the callback function runs the file "Test.scd"
+#
+# start_supercollider(callback_when_ready=lambda: run_file(os.path.realpath("Test.scd")), hold_until_booted=True)
+#
+#
+# # set up a responder to handle messages coming from supercollider; this is likely unnecessary a lot of the time
+# def talk_back_responder(addr, tags, stuff, source):
+#     print "Supercollider says \"{}\"".format(stuff[0])
+#
+# add_sc_listener("/chatter", talk_back_responder)
+#
+# # wait five seconds while we listen to the initial state of the synth
+# time.sleep(5)
+#
+# # set the frequency of the left-right wobble in the synth to 20Hz
+# # also, the supercollider file is set up to send back a message in response
+# send_sc_message("setWobbleFrequency", [20])
+#
+# # listen for 5 seconds
+# time.sleep(5)
